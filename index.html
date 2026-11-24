@@ -8,7 +8,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-256.png">
 <link rel="apple-touch-icon" href="icon-256.png">
-<script>window.AP_WEB = {version: "1.12.4"};</script>
+<script>window.AP_WEB = {version: "1.13.0"};</script>
 <title>Arbeitsplaner</title>
 <style>
 @font-face{font-family:"Inter";src:url("fonts/inter.woff2") format("woff2");font-weight:100 900;font-display:swap}
@@ -594,10 +594,11 @@ body.detail-big .d-head{padding:16px 18px 14px 28px}
 .home{max-width:1240px;margin:0 auto}
 /* PC: Woche und Heute füllen die Bildschirmhöhe */
 @container (min-width:980px){
-  .home{min-height:100%;display:flex;flex-direction:column}
-  #hmBody{flex:1;display:flex;flex-direction:column;min-height:0}
-  #hmBody .hm-grid{flex:1;grid-template-rows:minmax(380px,1fr)}
-  .hm-card.woche .wk-grid{flex:1}
+  .home{height:100%;display:flex;flex-direction:column}
+  #hmBody{flex:1 1 0;display:flex;flex-direction:column;min-height:0}
+  #hmBody .hm-grid{flex:1 1 0;min-height:460px;grid-template-rows:minmax(0,1fr) auto}
+  .hm-card.monat{min-height:0;overflow:hidden}
+  .hm-card.monat .mc-grid{flex:1}
 }
 .hm-bar{display:none;align-items:center;gap:10px;margin-bottom:22px}
 .hm-bar .brand{font-size:19px}
@@ -624,7 +625,37 @@ body.detail-big .d-head{padding:16px 18px 14px 28px}
 .hm-stat .hs-sub{font-size:13px;color:var(--fg-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hm-prog{height:5px;border-radius:3px;background:var(--card-2);overflow:hidden;margin-top:8px}
 .hm-prog i{display:block;height:100%;background:var(--accent);border-radius:3px}
-.hm-grid{display:grid;gap:14px;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-areas:"woche woche woche woche woche woche woche woche heute heute heute heute"}
+.hm-grid{display:grid;gap:14px;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-areas:"monat monat monat monat monat monat monat todo todo todo todo todo" "monat monat monat monat monat monat monat gebs gebs gebs gebs gebs"}
+.hm-card.monat{grid-area:monat} .hm-card.todo{grid-area:todo} .hm-card.gebs{grid-area:gebs}
+.hm-card.todo{height:0;min-height:100%;overflow-y:auto}
+.hm-card.todo > header{position:sticky;top:0;z-index:1;background:var(--card);border-radius:18px 18px 0 0}
+.hm-cnt{font-size:13px;font-weight:600;color:var(--fg-2);font-variant-numeric:tabular-nums}
+.hm-grp{display:flex;align-items:center;gap:8px;padding:10px 20px 6px;font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-2);border-top:1px solid var(--line)}
+.hm-grp i{width:8px;height:8px;border-radius:50%;background:var(--fg-3)}
+.hm-grp.p3 i{background:var(--p-high)} .hm-grp.p2 i{background:var(--p-med)} .hm-grp.p1 i{background:var(--p-low)}
+.hm-grp em{font-style:normal;margin-left:auto;font-variant-numeric:tabular-nums}
+.hm-card > header .sq-btn.sm{width:34px;height:34px;border-radius:10px;background:var(--card-2)}
+.mc-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-template-rows:auto repeat(var(--weeks),minmax(40px,1fr));gap:4px;padding:0 14px 14px;min-height:0}
+.mc-h{font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-2);padding:0 6px 4px}
+.mc-h.we{color:var(--accent-text)}
+.mc-d{display:flex;flex-direction:column;align-items:stretch;gap:3px;min-width:0;padding:6px;border-radius:10px;text-align:left;background:var(--card-2);border:1px solid transparent;overflow:hidden}
+.mc-d:hover{border-color:var(--line-2)}
+.mc-d b{font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+.mc-d.we{background:color-mix(in srgb, var(--accent) 5%, var(--card-2))}
+.mc-d.we b{color:var(--fg-2)} .mc-d.hol b{color:var(--p-high)}
+.mc-d.out{opacity:.38}
+.mc-d.past:not(.today) .mc-it{opacity:.6}
+.mc-d.today{border-color:var(--accent);background:color-mix(in srgb, var(--accent) 12%, var(--card-2))}
+.mc-d.today b{color:var(--accent-text)}
+.mc-hol{font-size:10.5px;font-weight:600;color:var(--p-high);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mc-it{display:flex;flex-direction:column;gap:2px;min-width:0}
+.mc-it i{display:block;font-style:normal;font-size:11px;font-weight:500;line-height:1.35;padding:1px 5px;border-radius:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:color-mix(in srgb, var(--c) 18%, transparent);color:color-mix(in srgb, var(--c) 55%, var(--fg))}
+.mc-it i.bd{font-weight:600}
+.mc-it em{font-style:normal;font-size:10.5px;color:var(--fg-2);padding-left:4px}
+.mc-dots{display:none;gap:3px;justify-content:center;margin-top:auto}
+.mc-dots i{width:5px;height:5px;border-radius:50%;background:var(--c)}
+.hm-soon.now .sn{color:#FF8A5B;font-weight:600}
+.hm-gebs-add{padding:0 20px 18px}
 /* Heute wächst nicht über die Woche hinaus, sondern scrollt bei Bedarf in sich */
 .hm-card.heute{height:0;min-height:100%;overflow-y:auto}
 .hm-card.heute > header{position:sticky;top:0;z-index:1;background:var(--card);border-radius:18px 18px 0 0}
@@ -700,8 +731,9 @@ button.hm-wrow:hover span{color:var(--accent-text)}
 .nx-item:hover b{color:var(--accent-text)}
 .nx p{margin:0;font-size:13.5px;color:var(--fg-2)}
 @container (max-width:979px){
-  .hm-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"heute heute" "woche woche" "next next"}
-  .hm-card.heute{height:auto;min-height:0;overflow:visible}
+  .hm-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"todo todo" "monat monat" "gebs gebs" "next next"}
+  .hm-card.todo{height:auto;min-height:0;max-height:60vh}
+  .mc-grid{grid-template-rows:auto repeat(var(--weeks),minmax(56px,auto))}
   .wk-col{min-height:160px}
   .wk-it em{display:none}
   .hm-week{display:none}
@@ -715,7 +747,10 @@ button.hm-wrow:hover span{color:var(--accent-text)}
   .hm-stat .lab .i,.hm-stat .hs-sub,.hm-stat .hl{display:none} .hm-stat .hs{display:inline}
   .hm-stat .val b{font-size:28px}
   .hm-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .hm-grid{gap:12px;grid-template-columns:minmax(0,1fr);grid-template-areas:"heute" "woche" "next"}
+  .hm-grid{gap:12px;grid-template-columns:minmax(0,1fr);grid-template-areas:"todo" "monat" "gebs" "next"}
+  .mc-grid{gap:3px;padding:0 10px 12px;grid-template-rows:auto repeat(var(--weeks),46px)}
+  .mc-d{align-items:center;padding:5px 2px}
+  .mc-it,.mc-hol{display:none} .mc-dots{display:flex}
   .wk-grid{display:none} .wk-compact{display:block} .wk-compact .hm-week{display:flex}
   .hm-people{padding:0 16px 16px;grid-template-columns:1fr}
   .hm-task{padding:11px 16px}
@@ -2703,7 +2738,8 @@ function homeTask(t) {
   const td = todayKey(), l = listOf(t), subs = t.subtasks || [], late = !t.done && t.due && t.due < td;
   let right = ''; const sub = [];
   if (late) { right = '<span class="late-pill">überfällig</span>'; const d = parseKey(t.due); sub.push(`überfällig · ${WDS[d.getDay()]}, ${d.getDate()}. ${MONS[d.getMonth()].replace('.', '')}`); }
-  else if (t.time) { right = esc(t.time); sub.push(esc(t.time)); }
+  else if (t.time) { right = esc(t.due && t.due !== td ? relLabel(t.due) + ', ' + t.time : t.time); sub.push(esc(t.time)); }
+  else if (t.due && t.due !== td) right = esc(relLabel(t.due));
   if (subs.length) { const x = `${subs.filter(v => v.done).length} / ${subs.length}`; if (!right) right = x; sub.push(x + ' Teilaufgaben'); }
   if (l) sub.push(esc(l.name));
   return `<div class="hm-task p${t.priority || 0} ${late ? 'late' : ''} ${t.done ? 'is-done' : ''}" role="button" tabindex="0" data-act="open-task" data-id="${t.id}"><button class="chk" data-act="toggle-task" data-id="${t.id}" aria-label="${t.done ? 'Wieder öffnen' : 'Als erledigt markieren'}">${ic('check')}</button><div class="tt"><b>${t.title ? esc(t.title) : 'Ohne Titel'}</b>${sub.length ? `<small class="${late ? 'late' : ''}">${sub.join(' · ')}</small>` : ''}${noteHtml(t)}</div>${ppBadges(t)}${right ? `<span class="rt">${right}</span>` : ''}</div>`;
@@ -2728,43 +2764,34 @@ function renderHome() {
     ${stat('leave', ic('clock', 'ue'), 'Überstunden', `<b class="${o.saldo < 0 ? 'neg' : 'h'}">${signed(o.saldo, fmtH) || '0,0'}</b><span>Std.</span>`, `≈ ${fmtNum(o.saldo / hoursPerDay(), 1)} Diensttage`)}
   </div>`;
 
-  // Heute
-  const evToday = liveTasks().filter(t => isEvent(t) && t.due && firstDay(t) <= td && t.due >= td).sort((a, b) => (a.time || '00').localeCompare(b.time || '00'));
-  const evRow = t => `<div class="hm-task ev" role="button" tabindex="0" data-act="open-task" data-id="${t.id}"><span class="chk ev" title="Termin">${ic('cal')}</span><div class="tt"><b>${t.title ? esc(t.title) : 'Ohne Titel'}</b><small>${isRange(t) ? esc(whenLabel(t)) : t.time ? esc(t.time) + ' · Termin' : 'Termin · ganztägig'}</small>${noteHtml(t)}</div>${ppBadges(t)}<span class="rt">${firstDay(t) === td && t.time ? esc(t.time) : isRange(t) ? 'bis ' + dm(t.due) : 'ganztägig'}</span></div>`;
-  const rows = [...open.slice(0, 10), ...done.slice(-3)];
-  const more = open.length > 10 ? `<p class="hm-none">+${open.length - 10} weitere</p>` : '';
-  // Demnächst: Geburtstage der nächsten 30 Tage und der nächste Urlaub
-  const nl = nextLeave();
-  const soonRows = [...bdNext(4).filter(x => x.in > 0 && x.in <= 30).map(({b, k, in: d}) => `<button class="hm-soon" data-act="bd-manage"><span class="bd-ic">${ic('cake')}</span><span class="sn">${esc(bdLabel(b, k))}</span><em>${d === 1 ? 'morgen' : WDS[parseKey(k).getDay()] + ' ' + dm(k)}</em></button>`),
-    nl && nl.from > td ? `<button class="hm-soon" data-act="lv-edit" data-id="${nl.id}"><span class="bd-ic" style="color:${LT[nl.type].c};background:color-mix(in srgb, ${LT[nl.type].c} 15%, transparent)">${ic('case')}</span><span class="sn">${esc(nl.title || LT[nl.type].name)}</span><em>${nl.to && nl.to !== nl.from ? dm(nl.from) + ' – ' + dm(nl.to) : dm(nl.from)}</em></button>` : ''].filter(Boolean);
-  const soon = soonRows.length ? `<div class="hm-soon-h">Demnächst</div><div class="hm-soon-l">${soonRows.join('')}</div>` : '';
-  const heute = `<section class="hm-card heute"><header><h2>Heute</h2><button class="hm-link" data-act="sel" data-type="smart" data-id="today">Alle anzeigen</button></header>${bdOn(td).map(b => `<button class="hm-bd" data-act="bd-manage">${ic('cake')}<span>${esc(bdText(b, td))}</span></button>`).join('')}${evToday.map(evRow).join('')}${rows.length ? rows.map(homeTask).join('') + more : evToday.length || bdOn(td).length ? '' : '<p class="hm-none">Für heute ist nichts geplant. Leg oben etwas an oder genieße den freien Tag.</p>'}${soon}</section>`;
+  // Noch zu erledigen: alle offenen Aufgaben, nach Priorität (innerhalb: überfällig, dann nach Datum)
+  const dueK = t => t.due || '9999-12-31';
+  const todo = openTasks().sort((a, b) => (b.priority || 0) - (a.priority || 0) || (dueK(a) < td ? 0 : 1) - (dueK(b) < td ? 0 : 1) || dueK(a).localeCompare(dueK(b)) || (a.time || '99').localeCompare(b.time || '99') || cmpTask(a, b));
+  const PN = {3: 'Hohe Priorität', 2: 'Mittlere Priorität', 1: 'Niedrige Priorität', 0: 'Ohne Priorität'};
+  const pCount = p => todo.filter(t => (t.priority || 0) === p).length;
+  const trows = []; let lastP = null;
+  for (const t of todo) { const p = t.priority || 0; if (p !== lastP) { trows.push(`<div class="hm-grp p${p}"><i></i><span>${PN[p]}</span><em>${pCount(p)}</em></div>`); lastP = p; } trows.push(homeTask(t)); }
+  const todoCard = `<section class="hm-card todo"><header><h2>Noch zu erledigen</h2><span class="hm-cnt">${todo.length || ''}</span><button class="hm-link" data-act="sel" data-type="smart" data-id="all">Alle Aufgaben</button></header>${trows.join('') || '<p class="hm-none">Alles erledigt – gerade ist nichts offen.</p>'}</section>`;
 
-  // Diese Woche: groß als sieben Spalten, auf dem Handy als Leiste mit Liste
-  const ws = startOfWeek(now), by = tasksByDay(), wEnd = dkey(addDays(ws, 6)), lv = leaveByDay(dkey(ws), wEnd);
-  const days = [0, 1, 2, 3, 4, 5, 6].map(i => addDays(ws, i));
-  const wkItem = t => `<div class="wk-it ${isEvent(t) ? 'ev' : ''} ${t.done ? 'done' : ''}" style="--c:${chipColor(t)}" data-act="open-task" data-id="${t.id}" ${t.done || t._cont ? '' : `data-drag-task="${t.id}"`} title="${esc((t.title || '') + (isRange(t) ? ' · ' + whenLabel(t) : ''))}">${t.time ? `<em>${esc(t.time)}</em>` : ''}<span>${t.title ? esc(t.title) : 'Ohne Titel'}</span>${ppBadges(t)}</div>`;
-  const cols = days.map(d => {
-    const k = dkey(d), hol = holidayOf(k), lvs = lv.get(k) || [], items = by.get(k) || [], MAX = 8;
-    return `<div class="wk-col ${k === td ? 'today' : ''} ${k < td ? 'past' : ''} ${dayClass(d)}" data-drop-day="${k}"><button class="wk-h" data-act="home-day" data-day="${k}" title="${esc(longDate(d))} im Kalender öffnen"><small>${WDS[d.getDay()]}</small><b>${d.getDate()}</b></button><div class="wk-items">${hol ? `<div class="wk-hol">${esc(hol)}</div>` : ''}${bdOn(k).map(b => bchip(b, k)).join('')}${lvs.map(lchip).join('')}${items.slice(0, MAX).map(wkItem).join('')}${items.length > MAX ? `<button class="wk-more" data-act="home-day" data-day="${k}">+${items.length - MAX} weitere</button>` : ''}</div></div>`;
-  }).join('');
-  const strip = days.map(d => {
-    const k = dkey(d), hol = holidayOf(k);
-    const dots = [...bdOn(k).slice(0, 1).map(() => BD_C), ...(lv.get(k) || []).slice(0, 1).map(e => LT[e.type].c), ...(by.get(k) || []).filter(t => !t.done).map(chipColor)].slice(0, 3);
-    return `<button class="hm-day ${k === td ? 'today' : ''} ${dayClass(d)}" data-act="home-day" data-day="${k}" title="${esc(longDate(d) + (hol ? ' · ' + hol : ''))}"><small>${WDS[d.getDay()]}</small><b>${d.getDate()}</b><span class="hm-dots">${dots.map(c => `<i style="--c:${c}"></i>`).join('')}</span></button>`;
-  }).join('');
-  const wrows = [];
-  for (const d of days) {
-    const k = dkey(d); if (k < td) continue; const wd = WDS[d.getDay()];
-    const hol = holidayOf(k); if (hol) wrows.push(`<div class="hm-wrow hol"><small>${wd}</small><span>${esc(hol)}</span></div>`);
-    for (const b of bdOn(k)) wrows.push(`<button class="hm-wrow bd" data-act="bd-manage"><small>${wd}</small><span>${ic('cake')}${esc(bdLabel(b, k))}</span></button>`);
-    for (const e of (lv.get(k) || [])) if (e.from === k || k === td) wrows.push(`<button class="hm-wrow" data-act="lv-edit" data-id="${e.id}"><small>${wd}</small><span>${esc(e.title || LT[e.type].cal || LT[e.type].name)}</span></button>`);
-    for (const t of (by.get(k) || []).filter(t => !t.done && (!t._cont || k === td))) wrows.push(`<button class="hm-wrow" data-act="open-task" data-id="${t.id}"><small>${wd}</small><span>${t.title ? esc(t.title) : 'Ohne Titel'}${t.time ? ' · ' + esc(t.time) : ''}${isRange(t) ? ' · bis ' + dm(t.due) : ''} ${ppBadges(t)}</span></button>`);
+  // Kompakte Monatsansicht
+  const by = tasksByDay();
+  const mA = new Date(now.getFullYear(), now.getMonth() + (S.hmMonth || 0), 1);
+  const mStart = startOfWeek(mA), mLast = new Date(mA.getFullYear(), mA.getMonth() + 1, 0);
+  const weeks = Math.round((addDays(startOfWeek(mLast), 7) - mStart) / 864e5 / 7);
+  const mlv = leaveByDay(dkey(mStart), dkey(addDays(mStart, weeks * 7 - 1)));
+  let mc = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].map((d, i) => `<div class="mc-h ${i > 4 ? 'we' : ''}">${d}</div>`).join('');
+  for (let i = 0; i < weeks * 7; i++) {
+    const d = addDays(mStart, i), k = dkey(d), hol = holidayOf(k);
+    const chips = [...bdOn(k).map(x => ({c: BD_C, t: bdLabel(x, k), bd: true})), ...(mlv.get(k) || []).map(e => ({c: LT[e.type].c, t: e.title || LT[e.type].cal || LT[e.type].name})), ...(by.get(k) || []).filter(t => !t.done).map(t => ({c: chipColor(t), t: (t.time ? t.time + ' ' : '') + (t.title || 'Ohne Titel')}))];
+    mc += `<button class="mc-d ${d.getMonth() !== mA.getMonth() ? 'out' : ''} ${k === td ? 'today' : ''} ${k < td ? 'past' : ''} ${dayClass(d)}" data-act="home-day" data-day="${k}" title="${esc([longDate(d), hol, ...chips.map(x => x.t)].filter(Boolean).join(' · '))}"><b>${d.getDate()}</b>${hol ? `<span class="mc-hol">${esc(hol)}</span>` : ''}<span class="mc-it">${chips.slice(0, 3).map(x => `<i class="${x.bd ? 'bd' : ''}" style="--c:${x.c}">${esc(x.t)}</i>`).join('')}${chips.length > 3 ? `<em>+${chips.length - 3}</em>` : ''}</span><span class="mc-dots">${chips.slice(0, 4).map(x => `<i style="--c:${x.c}"></i>`).join('')}</span></button>`;
   }
-  const wlist = wrows.length ? wrows.slice(0, 7).join('') + (wrows.length > 7 ? `<button class="hm-wrow" data-act="view" data-view="calendar"><small></small><span class="hm-link">+${wrows.length - 7} weitere im Kalender</span></button>` : '') : '<p class="hm-none">Diese Woche steht nichts mehr an.</p>';
-  const woche = `<section class="hm-card woche"><header><h2>Diese Woche</h2><small>KW ${isoWeek(now)} · ${dm(dkey(ws))} – ${dm(wEnd)}</small><button class="hm-link" data-act="view" data-view="calendar">Kalender</button></header><div class="wk-grid">${cols}</div><div class="wk-compact"><div class="hm-days">${strip}</div><div class="hm-week">${wlist}</div></div></section>`;
+  const monat = `<section class="hm-card monat"><header><h2>${MON[mA.getMonth()]} ${mA.getFullYear()}</h2>${S.hmMonth ? '<button class="hm-link" data-act="hm-month" data-v="0">Heute</button>' : ''}<button class="sq-btn sm" data-act="hm-month" data-v="-1" aria-label="Vorheriger Monat">${ic('left')}</button><button class="sq-btn sm" data-act="hm-month" data-v="1" aria-label="Nächster Monat">${ic('right')}</button><button class="hm-link" data-act="view" data-view="calendar">Kalender</button></header><div class="mc-grid" style="--weeks:${weeks}">${mc}</div></section>`;
 
-  const html = `${stats}<div class="hm-grid">${woche}${heute}${nextHtml('side-box hm-next')}</div>`;
+  // Geburtstage
+  const nb = bdNext(4);
+  const gebs = `<section class="hm-card gebs"><header><h2>Geburtstage</h2><button class="hm-link" data-act="bd-manage">${nb.length ? 'Verwalten' : 'Eintragen'}</button></header>${nb.length ? `<div class="hm-soon-l">${nb.map(({b, k, in: d}) => `<button class="hm-soon ${d === 0 ? 'now' : ''}" data-act="bd-manage"><span class="bd-ic">${ic('cake')}</span><span class="sn">${esc(bdLabel(b, k))}</span><em>${d === 0 ? 'heute' : d === 1 ? 'morgen' : `${WDS[parseKey(k).getDay()]} ${dm(k)} · in ${d} T.`}</em></button>`).join('')}</div>` : `<p class="hm-none">Noch keine Geburtstage eingetragen.</p><div class="hm-gebs-add"><button class="btn" data-act="bd-manage">${ic('plus')}Geburtstage eintragen</button></div>`}</section>`;
+
+  const html = `${stats}<div class="hm-grid">${monat}${todoCard}${gebs}${nextHtml('side-box hm-next')}</div>`;
   if (el.dataset.html === html) return; el.dataset.html = html;
   withFocus(() => { el.innerHTML = html; });
 }
@@ -3987,6 +4014,7 @@ document.addEventListener('click', e => {
     case 'd-person': togglePerson(S.taskId, v); break;
     case 'search-open': document.body.classList.add('side-open'); setTimeout(() => $('#search')?.focus(), 60); break;
     case 'qa-home-add': homeQuickAdd(); break;
+    case 'hm-month': S.hmMonth = v === '0' ? 0 : (S.hmMonth || 0) + +v; render(); break;
     case 'home-day': S.cal.day = el.dataset.day; S.cal.anchor = parseKey(el.dataset.day); setView('calendar'); break;
     case 'close-side': document.body.classList.remove('side-open'); break;
     case 'scrim': document.body.classList.remove('side-open'); if (S.taskId) closeTask(); break;

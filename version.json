@@ -1,5 +1,5 @@
 {
-  "version": "1.12.4",
+  "version": "1.13.0",
   "date": "2026-11-24",
-  "notes": "Übersicht füllt jetzt den ganzen Bildschirm. Unter „Heute“ steht „Demnächst“ mit den nächsten Geburtstagen und deinem nächsten Urlaub."
+  "notes": "Neue Übersicht: kompakter Monatskalender, „Noch zu erledigen“ nach Priorität und eine eigene Geburtstage-Karte."
 }
