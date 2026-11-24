@@ -8,7 +8,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-256.png">
 <link rel="apple-touch-icon" href="icon-256.png">
-<script>window.AP_WEB = {version: "1.10.0"};</script>
+<script>window.AP_WEB = {version: "1.11.0"};</script>
 <title>Arbeitsplaner</title>
 <style>
 @font-face{font-family:"Inter";src:url("fonts/inter.woff2") format("woff2");font-weight:100 900;font-display:swap}
@@ -780,6 +780,36 @@ button.hm-wrow:hover span{color:var(--accent-text)}
 .lv-kind .btn{height:40px}
 .btn.kd{background:transparent;border-color:var(--line-2)}
 .btn.kd .i{color:#E879A9}
+.lv-minis{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:16px}
+.lv-mini{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.lv-mini header{display:flex;align-items:center;gap:12px}
+.lv-mini header > div{flex:1;min-width:0}
+.lv-mini header b{display:block;font-family:var(--font-head);font-size:16.5px;font-weight:700}
+.lv-mini header small{display:block;font-size:12.5px;color:var(--fg-2)}
+.lv-mini header .lv-tile{width:36px;height:36px;border-radius:10px}
+.lv-mini header .btn{width:36px;height:36px;padding:0;justify-content:center;flex:none}
+.lv-mini header .btn span{display:none}
+.lm-num{display:flex;align-items:baseline;gap:8px}
+.lm-num b{font-family:var(--font-head);font-size:38px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;color:color-mix(in srgb, var(--mc) 85%, var(--fg))}
+.lm-num span{font-size:14px;color:var(--fg-2)}
+.lm-sub{font-size:13px;color:var(--fg-2)}
+.lv-mini .lv-hint{margin-top:0}
+.lv-buckets{display:flex;flex-wrap:wrap;gap:6px}
+.lv-buckets span{display:inline-flex;gap:7px;align-items:center;height:28px;padding:0 10px;border-radius:8px;background:var(--card-2);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.lv-buckets span em{font-style:normal;font-weight:500;color:var(--fg-2)}
+.lv-su{display:flex;flex-direction:column;gap:6px}
+.lv-su div{display:flex;align-items:baseline;gap:10px;padding:9px 12px;border-radius:12px;background:var(--card-2)}
+.lv-su div b{font-family:var(--font-head);font-size:24px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;color:color-mix(in srgb, var(--mc) 85%, var(--fg));min-width:2ch}
+.lv-su div span{font-size:14px;font-weight:500}
+.lv-su div small{margin-left:auto;font-size:12.5px;color:var(--fg-2);white-space:nowrap}
+.lv-tile.f{background:color-mix(in srgb, #4FB8A9 16%, var(--card));color:color-mix(in srgb, #4FB8A9 85%, var(--fg))}
+.lv-tile.s{background:color-mix(in srgb, #B48CF0 16%, var(--card));color:color-mix(in srgb, #B48CF0 85%, var(--fg))}
+.su{color:color-mix(in srgb, #B48CF0 85%, var(--fg))}
+.lv-table > header .btn{height:36px}
+.lv-side .yr .sq-btn:disabled{opacity:.3;pointer-events:none}
+.lv-seg{flex-wrap:wrap}
+.lv-seg.lv-acc{margin-top:0}
+.lv-seg.lv-acc button{font-size:13px}
 .lv-table{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden}
 .lv-table > header{display:flex;align-items:center;gap:12px;padding:16px 18px 16px 24px;border-bottom:1px solid var(--line)}
 .lv-table > header b{font-family:var(--font-head);font-size:18px;font-weight:700}
@@ -1341,7 +1371,7 @@ const COLLS = ['tasks', 'lists', 'habits', 'focus', 'settings', 'leave', 'filter
 /* ---------- Zustand ---------- */
 const S = {
   tasks: new Map(), lists: new Map(), habits: new Map(), focus: new Map(), settings: new Map(), leave: new Map(), filters: new Map(), templates: new Map(),
-  leaveYear: new Date().getFullYear(), leaveFilter: ls.get('ap.lvFilter', 'all'), qaOff: new Set(), habitMode: ls.get('ap.habitMode', 'week'),
+  leaveYear: Math.max(2026, new Date().getFullYear()), leaveFilter: ls.get('ap.lvFilter', 'all'), qaOff: new Set(), habitMode: ls.get('ap.habitMode', 'week'),
   loaded: false, got: new Set(), mode: null, sync: 'connecting',
   view: 'tasks', sel: ls.get('ap.sel', {type: 'smart', id: 'today'}),
   taskId: null, search: '', showDone: ls.get('ap.showDone', true),
@@ -2638,7 +2668,7 @@ function renderHome() {
   const open = openTasks().filter(t => t.due && t.due <= td).sort((a, b) => ((a.due < td) ? 0 : 1) - ((b.due < td) ? 0 : 1) || (a.time || '99').localeCompare(b.time || '99') || cmpTask(a, b));
   const done = liveTasks().filter(t => t.done && t.completedAt && dkey(new Date(t.completedAt)) === td).sort((a, b) => (a.completedAt || 0) - (b.completedAt || 0));
   const total = open.length + done.length;
-  const u = leaveStats(Y), o = overtimeStats(Y), hasLeave = leaveAll().some(e => e.kind === 'urlaub');
+  const u = leaveStats(Y), o = overtimeStats(Y), hasLeave = u.has;
   const stat = (view, icon, label, val, sub, extra = '') => `<button class="hm-stat" data-act="view" data-view="${view}"><span class="lab">${icon}${Array.isArray(label) ? `<span class="hl">${label[0]}</span><span class="hs">${label[1]}</span>` : label}</span><span class="val">${val}</span>${sub ? `<span class="hs-sub">${sub}</span>` : ''}${extra}</button>`;
   const stats = `<div class="hm-stats">
     ${stat('tasks', ic('done'), 'Aufgaben heute', `<b>${done.length}</b><span>/ ${total} erledigt</span>`, '', `<div class="hm-prog"><i style="width:${total ? Math.round(done.length / total * 100) : 0}%"></i></div>`)}
@@ -2898,31 +2928,46 @@ function toast(msg, undo) {
 }
 
 /* ---------- Urlaub & Überstunden ----------
-   Buchungen in der Sammlung "leave": {id, kind:'urlaub'|'ueber', type, title, from, to, half, days, hours, note}
-   Urlaub zählt je Kalenderjahr (Anspruch + Übertrag − Erholungsurlaub). Überstunden laufen als Saldo über alle Jahre. */
+   Buchungen in der Sammlung "leave": {id, type, title, from, to, half, days, hours, carry, origin}
+   Konten: urlaub (je Jahr), ueber (Stunden, laufend), fvd (Tage, laufend), kind (Tage je Herkunftsjahr),
+   betreuung / kindkrank (genommene Sonderurlaubstage je Jahr), sonst / kzh (nur gezählt).
+   Ein „Stand“ setzt ein Konto zu Beginn seines Tages neu; alles danach wird darauf gebucht. */
+const LV_MIN_YEAR = 2026;
 const LT = {
-  erholung: {kind: 'urlaub', name: 'Erholungsurlaub', badge: 'Urlaub', cal: 'Urlaub', c: '#F5A524', sign: -1, range: true},
-  sonder: {kind: 'urlaub', name: 'Sonderurlaub', badge: 'Sonderurlaub', cal: 'Sonderurlaub', c: '#B48CF0', sign: 0, range: true},
-  kzh: {kind: 'urlaub', name: 'Krank zu Hause', badge: 'KzH', cal: 'KzH', c: '#F07167', sign: 0, range: true},
-  anspruch: {kind: 'urlaub', name: 'Jahresanspruch', badge: 'Urlaub', c: '#F5A524', sign: 1, credit: true},
-  rest: {kind: 'urlaub', name: 'Übertrag aus Vorjahr', badge: 'Urlaub', c: '#F5A524', sign: 1, credit: true},
-  gutschrift: {kind: 'urlaub', name: 'Gutschrift', badge: 'Urlaub', c: '#F5A524', sign: 1, credit: true},
-  kind_stand: {kind: 'kind', name: 'Stand Kind-Konto', badge: 'Kind-Konto', c: '#E879A9', sign: 1, credit: true},
-  kind_spar: {kind: 'kind', name: 'Angespart', badge: 'Kind-Konto', c: '#E879A9', sign: 1, credit: true},
-  kind_ent: {kind: 'kind', name: 'Urlaub aus Kind-Konto', badge: 'Kind-Konto', cal: 'Urlaub (Kind-Konto)', c: '#E879A9', sign: -1, range: true},
-  zugang: {kind: 'ueber', name: 'Mehrarbeit', badge: 'Überstunden', cal: 'Mehrarbeit', c: '#6CB4EE', sign: 1},
-  abbau: {kind: 'ueber', name: 'Abbau Mehrarbeit', badge: 'Überstunden', cal: 'Abbau Mehrarbeit', c: '#6CB4EE', sign: -1, range: true}
+  erholung: {acc: 'urlaub', kind: 'urlaub', name: 'Erholungsurlaub', badge: 'Urlaub', cal: 'Urlaub', c: '#F5A524', sign: -1, range: true},
+  kzh: {acc: 'kzh', kind: 'urlaub', name: 'Krank zu Hause', badge: 'KzH', cal: 'KzH', c: '#F07167', sign: 0, range: true},
+  u_stand: {acc: 'urlaub', kind: 'urlaub', name: 'Stand Resturlaub', badge: 'Urlaub', c: '#F5A524', sign: 1, credit: true, stand: true},
+  anspruch: {acc: 'urlaub', kind: 'urlaub', name: 'Jahresanspruch', badge: 'Urlaub', c: '#F5A524', sign: 1, credit: true},
+  rest: {acc: 'urlaub', kind: 'urlaub', name: 'Übertrag aus Vorjahr', badge: 'Urlaub', c: '#F5A524', sign: 1, credit: true},
+  gutschrift: {acc: 'urlaub', kind: 'urlaub', name: 'Gutschrift', badge: 'Urlaub', c: '#F5A524', sign: 1, credit: true},
+  betreuung: {acc: 'betreuung', kind: 'sonder', name: 'Sonderurlaub Betreuung Kind', badge: 'Betreuung Kind', cal: 'SU Betreuung Kind', c: '#B48CF0', sign: 1, range: true},
+  kindkrank: {acc: 'kindkrank', kind: 'sonder', name: 'Sonderurlaub Kind krank', badge: 'Kind krank', cal: 'SU Kind krank', c: '#D58BD8', sign: 1, range: true},
+  betr_stand: {acc: 'betreuung', kind: 'sonder', name: 'Stand Betreuung Kind', badge: 'Betreuung Kind', c: '#B48CF0', sign: 1, credit: true, stand: true},
+  kk_stand: {acc: 'kindkrank', kind: 'sonder', name: 'Stand Kind krank', badge: 'Kind krank', c: '#D58BD8', sign: 1, credit: true, stand: true},
+  sonder: {acc: 'sonst', kind: 'sonder', name: 'Sonstiger Sonderurlaub', badge: 'Sonderurlaub', cal: 'Sonderurlaub', c: '#9A8CF0', sign: 0, range: true},
+  kind_stand: {acc: 'kind', kind: 'kind', name: 'Stand Kind-Konto', badge: 'Kind-Konto', c: '#E879A9', sign: 1, credit: true},
+  kind_spar: {acc: 'kind', kind: 'kind', name: 'Angespart', badge: 'Kind-Konto', c: '#E879A9', sign: 1, credit: true},
+  kind_ent: {acc: 'kind', kind: 'kind', name: 'Tage aus Kind-Konto', badge: 'Kind-Konto', cal: 'Kind-Konto', c: '#E879A9', sign: -1, range: true},
+  ue_stand: {acc: 'ueber', kind: 'ueber', name: 'Stand Überstunden', badge: 'Überstunden', c: '#6CB4EE', sign: 1, credit: true, stand: true},
+  zugang: {acc: 'ueber', kind: 'ueber', name: 'Aufbau Überstunden', badge: 'Überstunden', cal: 'Überstunden', c: '#6CB4EE', sign: 1},
+  abbau: {acc: 'ueber', kind: 'ueber', name: 'Abbau Überstunden', badge: 'Überstunden', cal: 'Abbau Überstunden', c: '#6CB4EE', sign: -1, range: true},
+  fvd_stand: {acc: 'fvd', kind: 'fvd', name: 'Stand FvD', badge: 'FvD', c: '#4FB8A9', sign: 1, credit: true, stand: true},
+  fvd_auf: {acc: 'fvd', kind: 'fvd', name: 'Aufbau FvD', badge: 'FvD', cal: 'FvD erhalten', c: '#4FB8A9', sign: 1},
+  fvd_ab: {acc: 'fvd', kind: 'fvd', name: 'FvD genommen', badge: 'FvD', cal: 'FvD', c: '#4FB8A9', sign: -1, range: true}
 };
+const LV_PER_YEAR = new Set(['urlaub', 'betreuung', 'kindkrank', 'sonst', 'kzh']);
+const LV_GROUPS = {urlaub: ['urlaub', 'kzh', 'sonst'], ueber: ['ueber', 'fvd'], kind: ['kind', 'betreuung', 'kindkrank']};
 const appSet = () => S.settings.get('app') || {};
 function setApp(patch) { const p = appSet(); save('settings', {...clone(p), id: 'app', ...patch}); }
 const hoursPerDay = () => +appSet().hoursPerDay || 8;
 const yearDays = () => +appSet().leaveDays || 30;
 const fmtNum = (n, dec = 1) => (Math.round(n * 10 ** dec) / 10 ** dec).toFixed(dec).replace('.', ',');
-const fmtDays = n => String(Math.round(n * 10) / 10).replace('.', ',');
+const fmtDays = n => (n < 0 ? '−' : '') + String(Math.abs(Math.round(n * 10) / 10)).replace('.', ',');
 const fmtH = n => fmtNum(n, 1);
 const signed = (n, f) => (n > 0 ? '+' : n < 0 ? '−' : '') + f(Math.abs(n));
 const dmy = k => { const [y, m, d] = k.split('-'); return `${d}.${m}.${y}`; };
 const dm = k => { const [, m, d] = k.split('-'); return `${d}.${m}.`; };
+const tageW = n => (Math.abs(n) === 1 ? 'Tag' : 'Tage');
 // Ist der Tag ein Arbeitstag? (Mo–Fr, kein Feiertag in BW, optional 24.12./31.12. frei)
 function isWorkday(d) {
   const wd = d.getDay(); if (wd === 0 || wd === 6) return false;
@@ -2937,113 +2982,194 @@ function workdays(from, to) {
 }
 const leaveAll = () => [...S.leave.values()].filter(e => e && LT[e.type] && e.from);
 const leaveYear = e => +e.from.slice(0, 4);
-const leaveAmount = e => LT[e.type].kind === 'ueber' ? (+e.hours || 0) : (+e.days || 0);
-// Kind-Konto: angesparter Urlaub zur Kinderbetreuung, läuft über alle Jahre
-function kindStats() {
-  const td = todayKey(); const r = {now: 0, all: 0, planned: 0, saved: 0, used: 0};
-  for (const e of leaveAll()) {
-    if (LT[e.type].kind !== 'kind') continue; const n = +e.days || 0;
-    if (e.type === 'kind_ent') { r.all -= n; r.used += n; const to = e.to || e.from; const part = to <= td ? n : e.from > td ? 0 : Math.min(n, e.half ? 0.5 : workdays(e.from, td)); r.now -= part; r.planned += n - part; }
-    else { r.all += n; if (e.from <= td) r.now += n; if (e.type === 'kind_spar') r.saved += n; }
-  }
-  return r;
+const lvHours = e => LT[e.type].acc === 'ueber';
+const leaveAmount = e => lvHours(e) ? (+e.hours || 0) : (+e.days || 0);
+const standVal = e => lvHours(e) ? (+e.hours || 0) : (+e.days || 0) + (+e.carry || 0);
+// Reihenfolge: Datum, am selben Tag erst Stände, dann Gutschriften, dann der Rest in Eingabereihenfolge
+const lvOrder = (a, b) => a.from.localeCompare(b.from) || (LT[b.type].stand ? 1 : 0) - (LT[a.type].stand ? 1 : 0) || (LT[b.type].credit ? 1 : 0) - (LT[a.type].credit ? 1 : 0) || (a.type === 'anspruch' ? -1 : b.type === 'anspruch' ? 1 : 0) || (a.createdAt || 0) - (b.createdAt || 0);
+// Wirkung einer Buchung: [Konto, Vorzeichen]. Ansparen geht vom Jahresurlaub ins Kind-Konto.
+const lvEffects = e => e.type === 'kind_spar' ? [['kind', 1], ['urlaub', -1]] : [[LT[e.type].acc, LT[e.type].sign]];
+// Wie viel einer Buchung bis Ende von Tag k schon „verbraucht“ ist (laufende Zeiträume anteilig)
+function partUntil(e, k) {
+  const n = leaveAmount(e); if (e.from > k) return 0; const to = e.to || e.from;
+  if (!LT[e.type].range || to <= k) return n;
+  const per = lvHours(e) ? hoursPerDay() : 1;
+  return Math.min(n, e.half ? per / 2 : workdays(e.from, k) * per);
 }
-const kindUntil = k => { let v = 0; for (const e of leaveAll()) if (LT[e.type].kind === 'kind' && e.from < k) v += LT[e.type].sign * (+e.days || 0); return v; };
+// Kontostand am Ende von Tag k. credAlways: Gutschriften und Stände zählen auch, wenn sie später datiert sind.
+function accAt(acc, k, Y = null, credAlways = false) {
+  let v = 0;
+  for (const e of leaveAll().filter(x => (Y == null || leaveYear(x) === Y) && lvEffects(x).some(f => f[0] === acc)).sort(lvOrder)) {
+    const t = LT[e.type], sign = lvEffects(e).find(f => f[0] === acc)[1];
+    if (t.stand) { if (credAlways || e.from <= k) v = standVal(e); continue; }
+    if (sign > 0 && t.credit) { if (credAlways || e.from <= k) v += leaveAmount(e); continue; }
+    v += sign * partUntil(e, k);
+  }
+  return v;
+}
+// Kind-Konto: Tage je Herkunftsjahr. Ein Stand setzt nur sein Jahr neu; Entnahmen gehen vom gewählten Jahr ab
+// (ohne Angabe vom ältesten Jahr mit Resttagen).
+const kindOrigin = e => +(e.origin || e.from.slice(0, 4));
+function kindPick(b, want) {
+  if (want && b.has(+want)) return +want;
+  const keys = [...b.keys()].sort((a, c) => a - c);
+  return keys.find(x => b.get(x) > 0) ?? keys[0] ?? (want ? +want : new Date().getFullYear());
+}
+function kindBuckets(k = '9999-12-31', skipId = '') {
+  const b = new Map();
+  for (const e of leaveAll().filter(x => LT[x.type].acc === 'kind' && x.id !== skipId).sort(lvOrder)) {
+    const n = +e.days || 0;
+    if (e.type === 'kind_stand') { b.set(kindOrigin(e), n); continue; }
+    if (e.type === 'kind_spar') { const o = kindOrigin(e); b.set(o, (b.get(o) || 0) + n); continue; }
+    const used = partUntil(e, k); if (!used) continue;
+    const o = kindPick(b, e.origin); b.set(o, (b.get(o) || 0) - used);
+  }
+  return new Map([...b.entries()].sort((a, c) => a[0] - c[0]));
+}
+const sumMap = m => [...m.values()].reduce((s, x) => s + x, 0);
+function kindStats() {
+  const now = kindBuckets(todayKey()), all = kindBuckets();
+  return {now: sumMap(now), all: sumMap(all), planned: sumMap(now) - sumMap(all), buckets: now, after: all, has: leaveAll().some(e => LT[e.type].acc === 'kind')};
+}
+// Stichtag für „bisher“: heute, in vergangenen Jahren der 31.12.
+const lvCut = Y => { const td = todayKey(); return Y < +td.slice(0, 4) ? `${Y}-12-31` : td; };
 function leaveStats(Y) {
-  const td = todayKey(); const r = {anspruch: 0, rest: 0, extra: 0, taken: 0, planned: 0, sonder: 0, kzh: 0, kind: 0};
-  for (const e of leaveAll()) {
-    if (e.type === 'kind_spar' && leaveYear(e) === Y) { r.kind += +e.days || 0; continue; }
-    if (e.kind !== 'urlaub' || leaveYear(e) !== Y) continue;
+  const k = lvCut(Y);
+  const es = leaveAll().filter(e => leaveYear(e) === Y && lvEffects(e).some(f => f[0] === 'urlaub')).sort(lvOrder);
+  let si = -1; es.forEach((e, i) => { if (e.type === 'u_stand') si = i; });
+  const st = si >= 0 ? es[si] : null;
+  const r = {stand: st, standDays: st ? +st.days || 0 : 0, carry: st ? +st.carry || 0 : 0, anspruch: 0, rest: 0, extra: 0, taken: 0, planned: 0, kind: 0, sonder: 0, kzh: 0};
+  for (const e of es.slice(si + 1)) {
     const n = +e.days || 0;
     if (e.type === 'anspruch') r.anspruch += n; else if (e.type === 'rest') r.rest += n; else if (e.type === 'gutschrift') r.extra += n;
-    else if (e.type === 'sonder') r.sonder += n; else if (e.type === 'kzh') r.kzh += n;
-    else if (e.type === 'erholung') {
-      const to = e.to || e.from;
-      if (to <= td) r.taken += n; else if (e.from > td) r.planned += n;
-      else { const part = Math.min(n, e.half ? 0.5 : workdays(e.from, td)); r.taken += part; r.planned += n - part; }
-    }
+    else { if (e.type === 'kind_spar') r.kind += n; const p = partUntil(e, k); r.taken += p; r.planned += n - p; }
   }
-  r.total = r.anspruch + r.rest + r.extra; r.taken += r.kind; r.avail = r.total - r.taken; r.after = r.avail - r.planned;
+  for (const e of leaveAll()) if (leaveYear(e) === Y) { if (e.type === 'sonder') r.sonder += +e.days || 0; else if (e.type === 'kzh') r.kzh += +e.days || 0; }
+  r.total = r.standDays + r.carry + r.anspruch + r.rest + r.extra;
+  r.avail = r.total - r.taken; r.after = r.avail - r.planned;
+  r.carryTotal = r.carry + r.rest; r.carryLeft = Math.max(0, r.carryTotal - r.taken);
+  r.has = !!st || r.total > 0;
   return r;
 }
-function overtimeUntil(k, inclusive = true) {
-  let s = 0; for (const e of leaveAll()) if (e.kind === 'ueber' && (inclusive ? e.from <= k : e.from < k)) s += LT[e.type].sign * (+e.hours || 0);
-  return s;
-}
+const prevDay = k => dkey(addDays(parseKey(k), -1));
+function overtimeUntil(k, inclusive = true) { return accAt('ueber', inclusive ? k : prevDay(k)); }
 function overtimeStats(Y) {
-  const td = todayKey(); const r = {saldo: overtimeUntil(td), all: overtimeUntil('9999-12-31'), plus: 0, minus: 0, count: 0, months: []};
-  for (const e of leaveAll()) if (e.kind === 'ueber' && leaveYear(e) === Y) { r.count++; const h = +e.hours || 0; if (e.type === 'zugang') r.plus += h; else r.minus += h; }
+  const td = todayKey(); const r = {saldo: accAt('ueber', td), all: accAt('ueber', '9999-12-31'), plus: 0, minus: 0, count: 0, months: [], has: leaveAll().some(e => LT[e.type].acc === 'ueber')};
+  for (const e of leaveAll()) if (LT[e.type].acc === 'ueber' && leaveYear(e) === Y) { r.count++; const h = +e.hours || 0; if (e.type === 'zugang') r.plus += h; else if (e.type === 'abbau') r.minus += h; }
   const now = new Date(); const lastM = Y < now.getFullYear() ? 11 : Y > now.getFullYear() ? -1 : now.getMonth();
   for (let m = 0; m <= lastM; m++) r.months.push({m, v: overtimeUntil(dkey(new Date(Y, m + 1, 0)))});
   return r;
 }
-// Buchungen eines Jahres mit laufendem Saldo
+function fvdStats() {
+  const td = todayKey();
+  return {now: accAt('fvd', td), all: accAt('fvd', '9999-12-31'), has: leaveAll().some(e => LT[e.type].acc === 'fvd')};
+}
+function sonderStats(Y) {
+  const k = lvCut(Y), end = `${Y}-12-31`; const r = {};
+  for (const acc of ['betreuung', 'kindkrank']) { const taken = accAt(acc, k, Y, true), all = accAt(acc, end, Y, true); r[acc] = {taken, planned: all - taken, all}; }
+  r.has = leaveAll().some(e => leaveYear(e) === Y && LT[e.type].kind === 'sonder');
+  return r;
+}
+// Buchungen eines Jahres mit laufendem Stand des jeweiligen Kontos
 function leaveRows(Y) {
-  const es = leaveAll().filter(e => leaveYear(e) === Y).sort((a, b) => a.from.localeCompare(b.from) || (LT[b.type].credit ? 1 : 0) - (LT[a.type].credit ? 1 : 0) || (a.type === 'anspruch' ? -1 : b.type === 'anspruch' ? 1 : 0) || (a.createdAt || 0) - (b.createdAt || 0));
-  let u = 0, h = overtimeUntil(`${Y}-01-01`, false), kd = kindUntil(`${Y}-01-01`);
-  return es.map(e => {
-    const t = LT[e.type], n = leaveAmount(e);
-    if (t.kind === 'kind') { kd += t.sign * n; if (e.type === 'kind_spar') u -= n; return {e, saldo: kd, kind: true}; }
-    if (t.kind === 'urlaub') u += t.sign * n; else h += t.sign * n;
-    return {e, saldo: t.kind === 'urlaub' ? (t.sign ? u : null) : h};
-  });
+  const run = new Map(), kb = new Map(), out = [];
+  for (const e of leaveAll().sort(lvOrder)) {
+    const t = LT[e.type], y = leaveYear(e); let saldo = null;
+    for (const [acc, sign] of lvEffects(e)) {
+      let v;
+      if (acc === 'kind') {
+        const n = +e.days || 0;
+        if (e.type === 'kind_stand') kb.set(kindOrigin(e), n);
+        else if (e.type === 'kind_spar') kb.set(kindOrigin(e), (kb.get(kindOrigin(e)) || 0) + n);
+        else { const o = kindPick(kb, e.origin); kb.set(o, (kb.get(o) || 0) - n); }
+        v = sumMap(kb);
+      } else {
+        const key = LV_PER_YEAR.has(acc) ? acc + y : acc;
+        v = t.stand ? standVal(e) : (run.get(key) || 0) + sign * leaveAmount(e);
+        run.set(key, v);
+      }
+      if (acc === t.acc && sign !== 0) saldo = v;
+    }
+    if (y === Y) out.push({e, saldo});
+  }
+  return out;
 }
 function leaveSub(e) {
-  const t = LT[e.type], td = todayKey(), parts = [];
-  if (e.type === 'kind_stand') parts.push('bereits angespart');
-  else if (e.type === 'kind_spar') parts.push(`aus Jahresurlaub ${leaveYear(e)} angespart`);
+  const t = LT[e.type], td = todayKey(), parts = [], Y = leaveYear(e);
+  if (e.type === 'u_stand') parts.push(`Stand zu Tagesbeginn · Rest ${Y}: ${fmtDays(+e.days || 0)}${+e.carry ? ` · Übertrag ${Y - 1}: ${fmtDays(+e.carry)}` : ''}`);
+  else if (e.type === 'ue_stand' || e.type === 'fvd_stand') parts.push('Stand zu Tagesbeginn');
+  else if (e.type === 'betr_stand' || e.type === 'kk_stand') parts.push(`bis dahin in ${Y} genommen`);
+  else if (e.type === 'kind_stand') parts.push(`Tage aus ${kindOrigin(e)} · Stand`);
+  else if (e.type === 'kind_spar') parts.push(`aus Jahresurlaub ${Y} angespart`);
   else if (t.credit) parts.push('Gutschrift');
-  else if (e.type === 'zugang') parts.push('Zugang');
+  else if (e.type === 'zugang' || e.type === 'fvd_auf') parts.push('Aufbau');
   else {
     if (e.to && e.to !== e.from) parts.push(`${dm(e.from)} – ${dm(e.to)}`);
-    if (e.type === 'abbau') parts.push(`Verbrauch · ${e.half ? 'halber Tag' : (e.to && e.to !== e.from ? `${fmtDays(e.days || 0)} Tage` : 'ganzer Tag')}`);
+    if (e.type === 'abbau') parts.push(`Abbau · ${e.half ? 'halber Tag' : (e.to && e.to !== e.from ? `${fmtDays(e.days || 0)} Tage` : 'ganzer Tag')}`);
     else if (e.half) parts.push('halber Tag');
-    if (e.type === 'sonder' || e.type === 'kzh' || e.type === 'kind_ent') parts.push(`${fmtDays(e.days || 0)} ${+e.days === 1 ? 'Tag' : 'Tage'}`);
+    if (['sonder', 'kzh', 'kind_ent', 'betreuung', 'kindkrank', 'fvd_ab'].includes(e.type)) parts.push(`${fmtDays(e.days || 0)} ${tageW(+e.days || 0)}`);
+    if (e.type === 'kind_ent') parts.push(e.origin ? `von ${e.origin}` : 'vom ältesten Jahr');
   }
   if (e.from > td && !t.credit) parts.push('geplant');
   return parts.join(' · ');
 }
 function leaveRowHtml({e, saldo}) {
   const t = LT[e.type], n = leaveAmount(e), td = todayKey(), plan = e.from > td && !t.credit;
-  const unit = t.kind === 'ueber' ? ' h' : ' T';
-  const amt = t.sign ? `<span class="${t.sign > 0 ? 'pos' : 'neg'}">${signed(t.sign * n, t.kind === 'ueber' ? fmtH : fmtDays)}${unit}</span>` : `<span class="neu">${fmtDays(n)}${unit}</span>`;
-  const sal = saldo == null ? '<span class="muted">–</span>' : (t.kind === 'ueber' ? fmtH(saldo) + ' h' : fmtDays(saldo) + ' T');
+  const unit = lvHours(e) ? ' h' : ' T', f = lvHours(e) ? fmtH : fmtDays;
+  const amt = (t.stand || e.type === 'kind_stand') ? `<span class="neu">= ${lvHours(e) ? signed(n, fmtH) || '0,0' : fmtDays(standVal(e))}${unit}</span>`
+    : t.sign ? `<span class="${t.sign > 0 ? (t.acc === 'betreuung' || t.acc === 'kindkrank' ? 'su' : 'pos') : 'neg'}">${signed(t.sign * n, f)}${unit}</span>` : `<span class="neu">${fmtDays(n)}${unit}</span>`;
+  const sal = saldo == null ? '<span class="muted">–</span>' : (lvHours(e) ? fmtH(saldo) + ' h' : fmtDays(saldo) + ' T');
   return `<button class="lv-row ${plan ? 'plan' : ''}" data-act="lv-edit" data-id="${e.id}"><span class="c-date">${dmy(e.from)}</span><span class="c-type"><span class="lbadge" style="--c:${t.c}">${t.badge}</span></span><span class="c-desc"><b>${esc(e.title || t.name)}</b><small>${esc(leaveSub(e))}</small></span><span class="c-amt">${amt}</span><span class="c-sal">${sal}</span></button>`;
 }
 function nextLeave() {
   const td = todayKey();
-  return leaveAll().filter(e => !LT[e.type].credit && e.type !== 'zugang' && (e.to || e.from) >= td).sort((a, b) => a.from.localeCompare(b.from))[0];
+  return leaveAll().filter(e => !LT[e.type].credit && e.type !== 'zugang' && e.type !== 'fvd_auf' && (e.to || e.from) >= td).sort((a, b) => a.from.localeCompare(b.from))[0];
 }
 function sideLeave() {
   const Y = S.leaveYear, nx = nextLeave(), td = todayKey();
-  let h = `<div class="side-card lv-side"><div class="yr"><button class="sq-btn" data-act="lv-year" data-v="-1" aria-label="Vorheriges Jahr">${ic('left')}</button><b>${Y}</b><button class="sq-btn" data-act="lv-year" data-v="1" aria-label="Nächstes Jahr">${ic('right')}</button></div>
-    <button class="btn primary" data-act="lv-new" data-v="erholung">${ic('plus')}Urlaub eintragen</button><button class="btn ue" data-act="lv-new" data-v="zugang">${ic('plus')}Überstunden eintragen</button><button class="btn kd" data-act="lv-new" data-v="kind_ent">${ic('plus')}Kind-Konto</button></div>`;
+  let h = `<div class="side-card lv-side"><div class="yr"><button class="sq-btn" data-act="lv-year" data-v="-1" aria-label="Vorheriges Jahr" ${Y <= LV_MIN_YEAR ? 'disabled' : ''}>${ic('left')}</button><b>${Y}</b><button class="sq-btn" data-act="lv-year" data-v="1" aria-label="Nächstes Jahr">${ic('right')}</button></div>
+    <button class="btn primary" data-act="lv-new">${ic('plus')}Neue Buchung</button></div>`;
   if (nx) {
     const n = diffDays(nx.from, td); const t = LT[nx.type];
     const when = n > 1 ? `in ${n} Tagen` : n === 1 ? 'ab morgen' : n === 0 ? 'ab heute' : 'läuft gerade';
-    const amount = t.kind === 'ueber' ? `${fmtH(nx.hours || 0)} Std.` : `${fmtDays(nx.days || 0)} ${+nx.days === 1 ? 'Tag' : 'Tage'}`;
+    const amount = lvHours(nx) ? `${fmtH(nx.hours || 0)} Std.` : `${fmtDays(nx.days || 0)} ${tageW(+nx.days || 0)}`;
     h += `<button class="side-box lv-next" data-act="lv-edit" data-id="${nx.id}"><div class="side-label"><span>Als Nächstes</span></div><b>${esc(nx.title || t.name)}</b><span>${nx.to && nx.to !== nx.from ? `${dm(nx.from)} – ${dm(nx.to)}` : dm(nx.from)} · ${amount}${nx.from > td ? ' · geplant' : ''}</span><em>${when}</em></button>`;
   }
   return h;
 }
 function renderLeave() {
-  const el = $('#v-leave'); const Y = S.leaveYear; const now = new Date();
-  const u = leaveStats(Y), o = overtimeStats(Y);
+  const el = $('#v-leave'); if (S.leaveYear < LV_MIN_YEAR) S.leaveYear = LV_MIN_YEAR;
+  const Y = S.leaveYear; const now = new Date();
+  const u = leaveStats(Y), o = overtimeStats(Y), fv = fvdStats(), k = kindStats(), su = sonderStats(Y);
   const total = Math.max(u.total, u.taken + u.planned, 1);
-  const pT = Math.min(100, u.taken / total * 100), pP = Math.min(100 - pT, u.planned / total * 100);
+  const pT = Math.min(100, Math.max(0, u.taken) / total * 100), pP = Math.min(100 - pT, Math.max(0, u.planned) / total * 100);
   const maxAbs = Math.max(1, ...o.months.map(x => Math.abs(x.v)));
   const bars = o.months.length ? o.months.map((x, i) => `<i class="${i === o.months.length - 1 && Y === now.getFullYear() ? 'cur' : ''} ${x.v < 0 ? 'minus' : ''}" style="height:${Math.max(6, Math.round(Math.abs(x.v) / maxAbs * 100))}%" title="${MON[x.m]}: ${fmtH(x.v)} h"></i>`).join('') : '<span class="muted">Noch kein Verlauf</span>';
   const mLabel = o.months.length ? `Verlauf ${MONS[0].replace('.', '')} – ${MONS[o.months[o.months.length - 1].m].replace('.', '')}: Saldo am Monatsende` : 'Verlauf: Saldo am Monatsende';
-  const f = S.leaveFilter;
-  const rows = leaveRows(Y).filter(r => f === 'all' || r.e.kind === f || (f === 'urlaub' && r.e.kind === 'kind')).reverse();
+  const f = LV_GROUPS[S.leaveFilter] ? S.leaveFilter : 'all';
+  const rows = leaveRows(Y).filter(r => f === 'all' || lvEffects(r.e).some(([a]) => LV_GROUPS[f].includes(a))).reverse();
   const isCur = Y === now.getFullYear();
   const standIn = isCur ? `Stand ${now.getDate()}. ${MON[now.getMonth()]} ${Y}` : `Jahr ${Y}`;
-  const missing = !u.anspruch ? `<button class="lv-hint" data-act="lv-anspruch">${ic('plus')}Jahresanspruch ${Y} eintragen (${yearDays()} Tage)</button>` : '';
-  const restHint = (!u.rest && leaveStats(Y - 1).total) ? (() => { const p = leaveStats(Y - 1); const left = p.total - p.taken - p.planned; return left > 0 ? `<button class="lv-hint" data-act="lv-rest" data-v="${left}">${ic('plus')}Rest aus ${Y - 1} übernehmen (${fmtDays(left)} Tage)</button>` : ''; })() : '';
-  const k = kindStats(); const kindUsed = leaveAll().some(e => LT[e.type].kind === 'kind');
-  const kindCard = `<section class="lv-kind"><span class="lv-tile k">${ic('heart')}</span><div class="lk-main"><b>Kind-Konto</b><small>Angesparter Urlaub zur Kinderbetreuung</small></div>${kindUsed ? `<div class="lk-num"><b>${fmtDays(k.now)}</b><span>Tage angespart</span></div>${k.planned ? `<div class="lk-sub">nach Planung: ${fmtDays(k.all)}</div>` : ''}` : '<div class="lk-sub">Noch kein Stand eingetragen</div>'}<button class="btn" data-act="lv-new" data-v="${kindUsed ? 'kind_ent' : 'kind_stand'}">${ic('plus')}<span>${kindUsed ? 'Eintragen' : 'Stand eintragen'}</span></button></section>`;
-  const kindLine = u.kind ? `<div class="lv-foot">Davon ins Kind-Konto angespart: ${fmtDays(u.kind)} ${u.kind === 1 ? 'Tag' : 'Tage'}</div>` : '';
-  const extraLine = (u.sonder || u.kzh) ? `<div class="lv-foot">${u.sonder ? `Sonderurlaub: ${fmtDays(u.sonder)} ${u.sonder === 1 ? 'Tag' : 'Tage'}` : ''}${u.sonder && u.kzh ? ' · ' : ''}${u.kzh ? `KzH: ${fmtDays(u.kzh)} ${u.kzh === 1 ? 'Tag' : 'Tage'}` : ''} <span class="muted">(zählen nicht gegen den Urlaub)</span></div>` : '';
+  // Urlaub
+  const uStats = u.stand
+    ? [[fmtDays(u.standDays), `Rest am ${dm(u.stand.from)}`], [fmtDays(u.carryTotal), `Übertrag ${Y - 1}`]]
+    : [[fmtDays(u.anspruch), `Anspruch ${Y}`], [fmtDays(u.rest), `Übertrag ${Y - 1}`]];
+  const hints = [];
+  if (!u.has) hints.push(`<button class="lv-hint" data-act="lv-new" data-v="u_stand">${ic('plus')}Aktuellen Stand Resturlaub eintragen</button>`, `<button class="lv-hint" data-act="lv-anspruch">${ic('plus')}Jahresanspruch ${Y} eintragen (${yearDays()} Tage)</button>`);
+  if (Y - 1 >= LV_MIN_YEAR && !u.rest && !u.stand) { const p = leaveStats(Y - 1); if (p.has && p.after > 0) hints.push(`<button class="lv-hint" data-act="lv-rest" data-v="${p.after}">${ic('plus')}Rest aus ${Y - 1} übernehmen (${fmtDays(p.after)} Tage)</button>`); }
+  const uFoot = [u.stand ? `Stand vom ${dmy(u.stand.from)} – genommen und geplant zählt ab dann` : 'Schraffiert = geplant, noch nicht genommen'];
+  if (u.carryTotal) uFoot.push(`Davon Übertrag aus ${Y - 1} noch übrig: ${fmtDays(u.carryLeft)} ${tageW(u.carryLeft)} <span class="muted">(wird zuerst verbraucht)</span>`);
+  if (u.kind) uFoot.push(`Davon ins Kind-Konto angespart: ${fmtDays(u.kind)} ${tageW(u.kind)}`);
+  if (u.kzh || u.sonder) uFoot.push(`${u.kzh ? `KzH: ${fmtDays(u.kzh)} ${tageW(u.kzh)}` : ''}${u.kzh && u.sonder ? ' · ' : ''}${u.sonder ? `Sonstiger Sonderurlaub: ${fmtDays(u.sonder)} ${tageW(u.sonder)}` : ''} <span class="muted">(zählen nicht gegen den Urlaub)</span>`);
+  // FvD, Kind-Konto, Sonderurlaub
+  const mini = (cls, color, icon, title, sub, body, preset) => `<section class="lv-mini" style="--mc:${color}"><header><span class="lv-tile ${cls}">${ic(icon)}</span><div><b>${title}</b><small>${sub}</small></div><button class="btn" data-act="lv-new" data-v="${preset}" title="Buchung eintragen" aria-label="${title}: Buchung eintragen">${ic('plus')}<span>Buchen</span></button></header>${body}</section>`;
+  const fvdBody = fv.has ? `<div class="lm-num"><b>${fmtDays(fv.now)}</b><span>${tageW(fv.now)} FvD offen</span></div>${fv.all !== fv.now ? `<div class="lm-sub">nach Planung: ${fmtDays(fv.all)} ${tageW(fv.all)}</div>` : ''}`
+    : `<button class="lv-hint" data-act="lv-new" data-v="fvd_stand">${ic('plus')}Stand FvD eintragen</button>`;
+  const bk = [...k.buckets.entries()].filter(([, v]) => v !== 0);
+  const kindBody = k.has ? `<div class="lm-num"><b>${fmtDays(k.now)}</b><span>${tageW(k.now)} angespart</span></div>${bk.length ? `<div class="lv-buckets">${bk.map(([y, v]) => `<span><em>${y}</em>${fmtDays(v)} T</span>`).join('')}</div>` : ''}${k.planned ? `<div class="lm-sub">nach Planung: ${fmtDays(k.all)} ${tageW(k.all)}</div>` : ''}`
+    : `<button class="lv-hint" data-act="lv-new" data-v="kind_stand">${ic('plus')}Tage je Jahr eintragen</button>`;
+  const suRow = (acc, name) => { const x = su[acc]; return `<div><b>${fmtDays(x.taken)}</b><span>${name}</span>${x.planned ? `<small>+${fmtDays(x.planned)} geplant</small>` : ''}</div>`; };
+  const suBody = `<div class="lv-su">${suRow('betreuung', 'Betreuung Kind')}${suRow('kindkrank', 'Kind krank')}</div>`;
   const html = `<div class="inner lv">
     <div class="vhead">${menuBtn()}<div class="ttl"><h1>Urlaub &amp; Überstunden</h1><div class="sub">Was du bekommen und was du verbraucht hast – ${standIn}</div></div><button class="btn" data-act="lv-export">${ic('download')}<span>Exportieren</span></button></div>
     <div class="lv-cards">
@@ -3051,22 +3177,26 @@ function renderLeave() {
         <header><span class="lv-tile u">${ic('case')}</span><b>Urlaub</b><span class="sp"></span><small>in Tagen</small></header>
         <div class="lv-big"><b class="u">${fmtDays(u.avail)}</b><span>Tage verfügbar</span><span class="sp"></span><small>nach Planung: ${fmtDays(u.after)}</small></div>
         <div class="lv-bar"><i class="taken" style="width:${pT}%"></i><i class="plan" style="width:${pP}%"></i></div>
-        <div class="lv-stats"><div><b>${fmtDays(u.anspruch)}</b><span>Anspruch ${Y}</span></div><div><b>${signed(u.rest, fmtDays) || '0'}</b><span>Rest aus ${Y - 1}</span></div><div><b>${fmtDays(u.taken)}</b><span><i class="lg taken"></i>genommen</span></div><div><b>${fmtDays(u.planned)}</b><span><i class="lg plan"></i>geplant</span></div></div>
-        <div class="lv-foot">Schraffiert = geplant, noch nicht genommen</div>${kindLine}${extraLine}${missing}${restHint}
+        <div class="lv-stats">${uStats.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('')}<div><b>${fmtDays(u.taken)}</b><span><i class="lg taken"></i>genommen</span></div><div><b>${fmtDays(u.planned)}</b><span><i class="lg plan"></i>geplant</span></div></div>
+        ${uFoot.map(x => `<div class="lv-foot">${x}</div>`).join('')}${hints.join('')}
       </section>
       <section class="lv-card">
         <header><span class="lv-tile h">${ic('clock')}</span><b>Überstunden</b><span class="sp"></span><small>in Stunden</small></header>
         <div class="lv-big"><b class="h">${signed(o.saldo, fmtH) || '0,0'}</b><span>Std. ${o.saldo < 0 ? 'im Minus' : 'Guthaben'}</span><span class="sp"></span><small>≈ ${fmtNum(o.saldo / hoursPerDay(), 1)} Diensttage${o.all !== o.saldo ? ` · nach Planung: ${fmtH(o.all)} h` : ''}</small></div>
         <div class="lv-chart">${bars}</div>
-        <div class="lv-stats three"><div><b class="pos">${signed(o.plus, fmtH) || '0,0'}</b><span>aufgebaut</span></div><div><b class="neg">${o.minus ? '−' + fmtH(o.minus) : '0,0'}</b><span>ausgeglichen</span></div><div><b>${o.count}</b><span>Buchungen</span></div></div>
-        <div class="lv-foot">${mLabel}</div>
+        <div class="lv-stats three"><div><b class="pos">${signed(o.plus, fmtH) || '0,0'}</b><span>aufgebaut ${Y}</span></div><div><b class="neg">${o.minus ? '−' + fmtH(o.minus) : '0,0'}</b><span>abgebaut ${Y}</span></div><div><b>${o.count}</b><span>Buchungen</span></div></div>
+        <div class="lv-foot">${mLabel}</div>${o.has ? '' : `<button class="lv-hint" data-act="lv-new" data-v="ue_stand">${ic('plus')}Aktuellen Stand Überstunden eintragen</button>`}
       </section>
     </div>
-    ${kindCard}
+    <div class="lv-minis">
+      ${mini('f', '#4FB8A9', 'sun', 'FvD', 'Freistellung vom Dienst', fvdBody, fv.has ? 'fvd_ab' : 'fvd_stand')}
+      ${mini('k', '#E879A9', 'heart', 'Kind-Konto', 'Tage je Jahr', kindBody, k.has ? 'kind_ent' : 'kind_stand')}
+      ${mini('s', '#B48CF0', 'user', 'Sonderurlaub', `In ${Y} genommene Tage`, suBody, 'betreuung')}
+    </div>
     <div class="mobile-only">${sideLeave()}</div>
     <section class="lv-table">
-      <header><b>Buchungen</b><span class="sp"></span><div class="seg" role="group" aria-label="Filter">${[['all', 'Alle'], ['urlaub', 'Urlaub'], ['ueber', 'Überstunden']].map(([k, v]) => `<button data-act="lv-filter" data-v="${k}" aria-pressed="${f === k}">${v}</button>`).join('')}</div></header>
-      ${rows.length ? `<div class="lv-thead"><span>Datum</span><span>Art</span><span>Beschreibung</span><span class="r">Menge</span><span class="r">Saldo</span></div>${rows.map(leaveRowHtml).join('')}` : `<div class="lv-empty">${ic('case')}<b>Noch keine Buchungen für ${Y}</b><span>Trage deinen Jahresanspruch, Urlaub oder Überstunden ein.</span><div class="btn-row"><button class="btn primary" data-act="lv-new" data-v="erholung">${ic('plus')}Urlaub eintragen</button><button class="btn" data-act="lv-new" data-v="zugang">${ic('plus')}Überstunden eintragen</button></div></div>`}
+      <header><b>Buchungen ${Y}</b><button class="btn primary" data-act="lv-new">${ic('plus')}<span>Neue Buchung</span></button><span class="sp"></span><div class="seg" role="group" aria-label="Filter">${[['all', 'Alle'], ['urlaub', 'Urlaub'], ['ueber', 'Überst./FvD'], ['kind', 'Kind']].map(([key, v]) => `<button data-act="lv-filter" data-v="${key}" aria-pressed="${f === key}">${v}</button>`).join('')}</div></header>
+      ${rows.length ? `<div class="lv-thead"><span>Datum</span><span>Art</span><span>Beschreibung</span><span class="r">Menge</span><span class="r">Stand</span></div>${rows.map(leaveRowHtml).join('')}` : `<div class="lv-empty">${ic('case')}<b>Noch keine Buchungen für ${Y}</b><span>Trage zuerst deine aktuellen Stände ein – danach Urlaub, Überstunden, FvD und Sonderurlaub.</span><div class="btn-row"><button class="btn primary" data-act="lv-new">${ic('plus')}Neue Buchung</button></div></div>`}
     </section>
   </div>`;
   if (el.dataset.html === html) return; el.dataset.html = html;
@@ -3078,77 +3208,116 @@ function leaveByDay(fromK, toK) {
   for (const e of leaveAll()) {
     if (LT[e.type].credit) continue;
     const a = e.from, b = e.to || e.from; if (b < fromK || a > toK) continue;
-    if (e.type === 'zugang' || a === b) { if (a >= fromK && a <= toK) add(a, e); continue; }
+    if (!LT[e.type].range || a === b) { if (a >= fromK && a <= toK) add(a, e); continue; }
     let d = parseKey(a < fromK ? fromK : a); const end = parseKey(b > toK ? toK : b);
     for (let i = 0; d <= end && i < 400; i++, d = addDays(d, 1)) if (isWorkday(d)) add(dkey(d), e);
   }
   return m;
 }
-const lchip = e => { const t = LT[e.type]; const label = e.type === 'zugang' ? `+${fmtH(e.hours || 0)} h ${e.title || t.cal}` : (t.cal + (e.half ? ' (½)' : '')); return `<div class="lchip" style="--c:${t.c}" data-act="lv-edit" data-id="${e.id}" title="${esc((e.title || t.name) + ' · ' + leaveSub(e))}">${esc(label)}</div>`; };
+const lchip = e => { const t = LT[e.type]; const label = e.type === 'zugang' ? `+${fmtH(e.hours || 0)} h ${e.title || t.cal}` : e.type === 'fvd_auf' ? `+${fmtDays(e.days || 0)} FvD ${e.title || ''}`.trim() : (t.cal + (e.half ? ' (½)' : '')); return `<div class="lchip" style="--c:${t.c}" data-act="lv-edit" data-id="${e.id}" title="${esc((e.title || t.name) + ' · ' + leaveSub(e))}">${esc(label)}</div>`; };
 
-/* Dialog zum Eintragen */
+/* Dialog „Neue Buchung“: erst das Konto, dann die Art */
+const LV_DLG = {
+  urlaub: {name: 'Urlaub', def: 'erholung', types: [['erholung', 'Urlaub nehmen'], ['u_stand', 'Stand'], ['credit', 'Anspruch / Übertrag'], ['kzh', 'KzH']]},
+  ueber: {name: 'Überstunden', def: 'zugang', types: [['zugang', 'Aufbau'], ['abbau', 'Abbau'], ['ue_stand', 'Stand']]},
+  fvd: {name: 'FvD', def: 'fvd_ab', types: [['fvd_auf', 'Aufbau'], ['fvd_ab', 'Abbau'], ['fvd_stand', 'Stand']]},
+  kind: {name: 'Kind-Konto', def: 'kind_ent', types: [['kind_ent', 'Tage nehmen'], ['kind_stand', 'Stand je Jahr'], ['kind_spar', 'Ansparen']]},
+  sonder: {name: 'Sonderurlaub', def: 'betreuung', types: [['betreuung', 'Betreuung Kind'], ['kindkrank', 'Kind krank'], ['sonder', 'Sonstiger'], ['sstand', 'Stand']]}
+};
 function leaveDialog(entry, preset) {
   const isNew = !entry; const td = todayKey();
-  const st = entry ? clone(entry) : {type: preset || 'erholung', from: td, to: td, half: false, title: '', days: null, hours: null};
+  const st = entry ? clone(entry) : {type: LT[preset] ? preset : 'erholung', from: td, to: td, half: false, title: '', days: null, hours: null, carry: null, origin: null};
   if (!st.to) st.to = st.from;
+  if (isNew && st.type === 'kind_stand') st.origin = new Date().getFullYear() - 1;
   let manual = !isNew; // bei bestehenden Buchungen Menge nicht automatisch überschreiben
-  const kindOf = () => LT[st.type].kind;
+  const grp = () => LT[st.type].kind;
   const auto = () => {
     const t = LT[st.type];
-    if (t.credit) { if (st.days == null) st.days = st.type === 'anspruch' ? yearDays() : 1; return; }
-    if (st.type === 'kind_ent' && manual) return;
+    if (t.stand || st.type === 'kind_stand') return;
+    if (['anspruch', 'rest', 'gutschrift'].includes(st.type)) { if (st.days == null) st.days = st.type === 'anspruch' ? yearDays() : 1; return; }
     if (st.type === 'zugang') { if (st.hours == null) st.hours = 1; return; }
+    if (st.type === 'fvd_auf' || st.type === 'kind_spar') { if (st.days == null) st.days = 1; return; }
     if (manual) return;
     const wd = st.from === st.to && st.half ? 0.5 : workdays(st.from, st.to);
     st.days = wd; if (st.type === 'abbau') st.hours = Math.round(wd * hoursPerDay() * 10) / 10;
   };
+  const num = (id, label, val, opt = {}) => `<label class="fld"><span>${label}</span><input id="${id}" type="number" ${opt.neg ? '' : 'min="0"'} step="${opt.step || 0.5}" value="${val ?? ''}" ${opt.ph ? `placeholder="${opt.ph}"` : ''}></label>`;
+  const dateF = (label = 'Datum') => `<label class="fld"><span>${label}</span><input id="lv-from" type="date" value="${st.from}"></label>`;
   const body = () => {
-    auto(); const t = LT[st.type], k = kindOf();
-    const types = k === 'urlaub' ? [['erholung', 'Erholungsurlaub'], ['sonder', 'Sonderurlaub'], ['kzh', 'KzH'], ['credit', 'Gutschrift']] : k === 'kind' ? [['kind_stand', 'Stand'], ['kind_spar', 'Ansparen'], ['kind_ent', 'Urlaub nehmen']] : [['zugang', 'Mehrarbeit (Zugang)'], ['abbau', 'Abbau Mehrarbeit']];
-    const curSeg = t.credit && k !== 'kind' ? 'credit' : st.type;
-    let f = `<div class="seg full lv-seg" role="group" aria-label="Art">${types.map(([v, n]) => `<button type="button" data-lt="${v}" aria-pressed="${curSeg === v}">${n}</button>`).join('')}</div>`;
-    if (st.type === 'kind_stand' || st.type === 'kind_spar') {
-      const spar = st.type === 'kind_spar';
-      f += `<div class="fld-row"><label class="fld"><span>${spar ? 'Datum' : 'Stand am'}</span><input id="lv-from" type="date" value="${st.from}"></label><label class="fld"><span>Tage</span><input id="lv-days" type="number" min="0" step="0.5" value="${st.days}"></label></div>
-        <p class="hint">${spar ? 'Die Tage werden vom Jahresurlaub ' + st.from.slice(0, 4) + ' abgezogen und dem Kind-Konto gutgeschrieben.' : 'Trage ein, wie viele Tage auf deinem Kind-Konto bereits angespart sind. Der Jahresurlaub ändert sich dadurch nicht.'}</p>`;
-    } else if (t.credit) {
-      f += `<label class="fld"><span>Art der Gutschrift</span><select id="lv-credit">${['anspruch', 'rest', 'gutschrift'].map(v => `<option value="${v}" ${st.type === v ? 'selected' : ''}>${LT[v].name}</option>`).join('')}</select></label>
-        <div class="fld-row"><label class="fld"><span>Jahr</span><input id="lv-year" type="number" min="2000" max="2100" value="${st.from.slice(0, 4)}"></label><label class="fld"><span>Tage</span><input id="lv-days" type="number" min="0" step="0.5" value="${st.days}"></label></div>`;
+    auto(); const t = LT[st.type], g = grp(), Y = +st.from.slice(0, 4);
+    const curSeg = ['anspruch', 'rest', 'gutschrift'].includes(st.type) ? 'credit' : (st.type === 'betr_stand' || st.type === 'kk_stand') ? 'sstand' : st.type;
+    let f = `<div class="seg full accent lv-seg lv-acc" role="group" aria-label="Konto">${Object.entries(LV_DLG).map(([k, d]) => `<button type="button" data-lacc="${k}" aria-pressed="${g === k}">${d.name}</button>`).join('')}</div>`;
+    f += `<div class="seg full lv-seg" role="group" aria-label="Art">${LV_DLG[g].types.map(([v, n]) => `<button type="button" data-lt="${v}" aria-pressed="${curSeg === v}">${n}</button>`).join('')}</div>`;
+    if (st.type === 'u_stand') {
+      f += `<div class="fld-row">${dateF('Stand am')}${num('lv-days', `Resturlaub ${Y}`, st.days, {ph: 'Tage'})}</div><div class="fld-row">${num('lv-carry', `Übertrag aus ${Y - 1}`, st.carry, {ph: '0'})}<span></span></div>
+        <p class="hint">Was dir zu Beginn dieses Tages noch zusteht. Alles davor (Anspruch, genommener Urlaub) ist darin enthalten – gerechnet wird ab hier weiter.</p>`;
+    } else if (st.type === 'ue_stand') {
+      f += `<div class="fld-row">${dateF('Stand am')}${num('lv-hours', 'Stunden', st.hours, {neg: true, ph: 'z. B. 37,5'})}</div><p class="hint">Dein Überstunden-Saldo zu Beginn dieses Tages (im Minus mit „−“). Auf- und Abbau danach wird darauf gerechnet.</p>`;
+    } else if (st.type === 'fvd_stand') {
+      f += `<div class="fld-row">${dateF('Stand am')}${num('lv-days', 'Tage FvD', st.days, {ph: 'Tage'})}</div><p class="hint">Wie viele Tage FvD du zu Beginn dieses Tages offen hast.</p>`;
+    } else if (st.type === 'kind_stand') {
+      f += `<div class="fld-row">${num('lv-origin', 'Tage aus Jahr', st.origin, {step: 1})}${num('lv-days', 'Tage', st.days, {ph: 'Tage'})}</div><div class="fld-row">${dateF('Stand am')}<span></span></div>
+        <p class="hint">Trag für jedes Jahr einen eigenen Stand ein, z. B. „2024: 3 Tage“ und „2025: 5 Tage“. Nimmst du Tage, wählst du, von welchem Jahr sie abgehen.</p>`;
+    } else if (st.type === 'betr_stand' || st.type === 'kk_stand') {
+      f += `<label class="fld"><span>Für</span><select id="lv-sstand"><option value="betr_stand" ${st.type === 'betr_stand' ? 'selected' : ''}>Sonderurlaub Betreuung Kind</option><option value="kk_stand" ${st.type === 'kk_stand' ? 'selected' : ''}>Sonderurlaub Kind krank</option></select></label>
+        <div class="fld-row">${dateF('Stand am')}${num('lv-days', `Bereits genommen ${Y}`, st.days, {ph: 'Tage'})}</div><p class="hint">Wie viele Tage du in ${Y} bis zu diesem Tag schon genommen hast. Neue Buchungen werden dazugezählt.</p>`;
+    } else if (['anspruch', 'rest', 'gutschrift'].includes(st.type)) {
+      f += `<label class="fld"><span>Art</span><select id="lv-credit">${['anspruch', 'rest', 'gutschrift'].map(v => `<option value="${v}" ${st.type === v ? 'selected' : ''}>${LT[v].name}</option>`).join('')}</select></label>
+        <div class="fld-row"><label class="fld"><span>Jahr</span><input id="lv-year" type="number" min="${LV_MIN_YEAR}" max="2100" value="${Y}"></label>${num('lv-days', 'Tage', st.days)}</div>${st.type === 'rest' ? `<p class="hint">Übertrag aus ${Y - 1} – wird beim Urlaubnehmen zuerst verbraucht.</p>` : ''}`;
     } else if (st.type === 'zugang') {
-      f += `<div class="fld-row"><label class="fld"><span>Datum</span><input id="lv-from" type="date" value="${st.from}"></label><label class="fld"><span>Stunden</span><input id="lv-hours" type="number" min="0" step="0.5" value="${st.hours}"></label></div>`;
+      f += `<div class="fld-row">${dateF()}${num('lv-hours', 'Stunden', st.hours)}</div>`;
+    } else if (st.type === 'fvd_auf' || st.type === 'kind_spar') {
+      f += `<div class="fld-row">${dateF()}${num('lv-days', 'Tage', st.days)}</div>${st.type === 'kind_spar' ? `<p class="hint">Die Tage gehen vom Jahresurlaub ${Y} ab und kommen als „${Y}“ ins Kind-Konto.</p>` : '<p class="hint">Ein FvD-Tag entspricht einem ganzen freien Diensttag.</p>'}`;
     } else {
       const multi = st.from !== st.to;
       f += `<div class="fld-row"><label class="fld"><span>Von</span><input id="lv-from" type="date" value="${st.from}"></label><label class="fld"><span>Bis</span><input id="lv-to" type="date" value="${st.to}" min="${st.from}"></label></div>
         ${multi ? '' : `<label class="chkline"><input id="lv-half" type="checkbox" ${st.half ? 'checked' : ''}><span>Halber Tag</span></label>`}
-        <div class="fld-row"><label class="fld"><span>${st.type === 'abbau' ? 'Diensttage' : 'Arbeitstage'}</span><input id="lv-days" type="number" min="0" step="0.5" value="${st.days}"></label>${st.type === 'abbau' ? `<label class="fld"><span>Stunden</span><input id="lv-hours" type="number" min="0" step="0.5" value="${st.hours}"></label>` : ''}</div>
-        <p class="hint lv-calc">${workdays(st.from, st.to)} Arbeitstage im Zeitraum (ohne Wochenenden und Feiertage${appSet().xmasFree !== false ? ', 24.12./31.12. frei' : ''})${st.type === 'abbau' ? ` · ${fmtH(hoursPerDay())} Std. je Diensttag` : ''}</p>`;
+        <div class="fld-row">${num('lv-days', st.type === 'abbau' || st.type === 'fvd_ab' ? 'Diensttage' : 'Arbeitstage', st.days)}${st.type === 'abbau' ? num('lv-hours', 'Stunden', st.hours) : '<span></span>'}</div>`;
+      if (st.type === 'kind_ent') {
+        const b = kindBuckets('9999-12-31', entry ? entry.id : '');
+        const def = st.origin || kindPick(b, null);
+        f += `<label class="fld"><span>Abbuchen von</span><select id="lv-origin">${[...b.entries()].map(([y, v]) => `<option value="${y}" ${+def === y ? 'selected' : ''}>${y} – noch ${fmtDays(v)} ${tageW(v)}</option>`).join('')}${b.size ? '' : '<option value="">Noch kein Stand eingetragen</option>'}</select></label>`;
+      }
+      f += `<p class="hint lv-calc">${workdays(st.from, st.to)} Arbeitstage im Zeitraum (ohne Wochenenden und Feiertage${appSet().xmasFree !== false ? ', 24.12./31.12. frei' : ''})${st.type === 'abbau' ? ` · ${fmtH(hoursPerDay())} Std. je Diensttag` : ''}</p>`;
     }
-    const ph = {erholung: 'z. B. Sommerurlaub', sonder: 'z. B. Umzug', kzh: 'z. B. Erkältung', zugang: 'z. B. Übung, Wachdienst', abbau: 'z. B. Freizeitausgleich', kind_stand: 'z. B. Stand laut Personalstelle', kind_spar: 'z. B. Ansparen 2026', kind_ent: 'z. B. Betreuung in den Ferien'}[st.type] || LT[st.type].name;
+    const ph = {erholung: 'z. B. Sommerurlaub', sonder: 'z. B. Umzug', kzh: 'z. B. Erkältung', zugang: 'z. B. Übung, Wachdienst', abbau: 'z. B. Freizeitausgleich', u_stand: 'z. B. Stand nach Lehrgang', ue_stand: 'z. B. Stand laut Zeiterfassung', fvd_stand: 'z. B. Stand laut Spieß', fvd_auf: 'z. B. Wochenenddienst', fvd_ab: 'z. B. Brückentag', kind_stand: 'z. B. Stand laut Personalstelle', kind_spar: 'z. B. Ansparen ' + Y, kind_ent: 'z. B. Betreuung in den Ferien', betreuung: 'z. B. Kita geschlossen', kindkrank: 'z. B. Fieber'}[st.type] || t.name;
     f += `<label class="fld"><span>Beschreibung</span><input id="lv-title" type="text" maxlength="80" value="${esc(st.title || '')}" placeholder="${esc(ph)}"></label>`;
     return f;
   };
-  const head = () => `<div class="m-head"><h3>${isNew ? ({urlaub: 'Urlaub eintragen', kind: 'Kind-Konto', ueber: 'Überstunden eintragen'}[kindOf()]) : 'Buchung bearbeiten'}</h3><button class="icon-btn" type="button" data-m="no" aria-label="Schließen">${ic('x')}</button></div>`;
+  const head = () => `<div class="m-head"><h3>${isNew ? 'Neue Buchung' : 'Buchung bearbeiten'}</h3><button class="icon-btn" type="button" data-m="no" aria-label="Schließen">${ic('x')}</button></div>`;
   openModal(`<form id="lvForm">${head()}<div class="m-body" id="lvBody">${body()}</div><div class="m-foot">${isNew ? '' : `<button type="button" class="btn ghost danger-text" data-m="delete">${ic('trash')}Löschen</button>`}<span class="sp"></span><button type="button" class="btn" data-m="no">Abbrechen</button><button type="submit" class="btn primary">Speichern</button></div></form>`, back => {
     const redraw = () => { const b = $('#lvBody', back); b.innerHTML = body(); };
     const read = () => {
       const g = id => $('#' + id, back);
       if (g('lv-title')) st.title = g('lv-title').value.trim();
       if (g('lv-credit')) st.type = g('lv-credit').value;
-      if (g('lv-year')) { const y = +g('lv-year').value || new Date().getFullYear(); st.from = st.to = `${y}-01-01`; }
+      if (g('lv-sstand')) st.type = g('lv-sstand').value;
+      if (g('lv-year')) { const y = Math.max(LV_MIN_YEAR, +g('lv-year').value || new Date().getFullYear()); st.from = st.to = `${y}-01-01`; }
       if (g('lv-from') && g('lv-from').value) st.from = g('lv-from').value;
       if (g('lv-to') && g('lv-to').value) st.to = g('lv-to').value; else if (!g('lv-to')) st.to = st.from;
       if (st.to < st.from) st.to = st.from;
       if (g('lv-half')) st.half = g('lv-half').checked; if (st.from !== st.to) st.half = false;
-      if (g('lv-days') && g('lv-days').value !== '') st.days = +g('lv-days').value;
-      if (g('lv-hours') && g('lv-hours').value !== '') st.hours = +g('lv-hours').value;
+      const val = id => g(id) ? (g(id).value === '' ? null : +String(g(id).value).replace(',', '.')) : undefined;
+      for (const [id, key] of [['lv-days', 'days'], ['lv-hours', 'hours'], ['lv-carry', 'carry']]) { const v = val(id); if (v !== undefined) st[key] = v; }
+      if (g('lv-origin')) st.origin = g('lv-origin').value === '' ? null : +g('lv-origin').value;
+    };
+    const setType = v => {
+      st.type = v === 'credit' ? 'anspruch' : v === 'sstand' ? 'betr_stand' : v;
+      st.days = null; st.hours = null; st.carry = null; manual = false;
+      if (st.type === 'anspruch') { st.days = yearDays(); st.from = st.to = `${Math.max(LV_MIN_YEAR, +st.from.slice(0, 4))}-01-01`; }
+      else if (st.from.endsWith('-01-01') && st.from < td) st.from = st.to = td;
+      if (st.type === 'kind_stand') st.origin = st.origin || new Date().getFullYear() - 1; else if (st.type !== 'kind_ent') st.origin = null;
+      if (!LT[st.type].range) st.to = st.from;
+      redraw();
     };
     back.oninput = e => {
       const id = e.target.id;
-      if (id === 'lv-days' || id === 'lv-hours') { manual = true; read(); if (id === 'lv-days' && st.type === 'abbau') { st.hours = Math.round(st.days * hoursPerDay() * 10) / 10; const h = $('#lv-hours', back); if (h) h.value = st.hours; } }
+      if (id === 'lv-days' || id === 'lv-hours') { manual = true; read(); if (id === 'lv-days' && st.type === 'abbau') { st.hours = Math.round((st.days || 0) * hoursPerDay() * 10) / 10; const h = $('#lv-hours', back); if (h) h.value = st.hours; } }
+      if (id === 'lv-carry' || id === 'lv-origin' || id === 'lv-title') read();
     };
     back.onchange = e => {
-      const id = e.target.id; if (!['lv-from', 'lv-to', 'lv-half', 'lv-credit', 'lv-year'].includes(id)) return;
-      read(); if (id !== 'lv-credit' && id !== 'lv-year') manual = false;
+      const id = e.target.id; if (!['lv-from', 'lv-to', 'lv-half', 'lv-credit', 'lv-year', 'lv-sstand'].includes(id)) return;
+      read(); if (id === 'lv-from' || id === 'lv-to' || id === 'lv-half') manual = false;
       if (id === 'lv-credit') st.days = st.type === 'anspruch' ? yearDays() : st.days;
       if (id === 'lv-from' && $('#lv-to', back) && st.to < st.from) st.to = st.from;
       redraw();
@@ -3156,16 +3325,25 @@ function leaveDialog(entry, preset) {
     $('#lvForm', back).onsubmit = e => {
       e.preventDefault(); read(); auto();
       const t = LT[st.type];
-      const doc = {...(entry ? clone(entry) : {id: uid(), createdAt: Date.now()}), kind: t.kind, type: st.type, title: st.title, from: st.from, to: t.range ? st.to : st.from, half: !!st.half && st.from === st.to,
-        days: t.kind === 'urlaub' || t.kind === 'kind' || st.type === 'abbau' ? Math.max(0, +st.days || 0) : null, hours: t.kind === 'ueber' ? Math.max(0, +st.hours || 0) : null};
+      const need = t.stand || st.type === 'kind_stand' ? (lvHours(st) ? st.hours : st.days) : 0;
+      if (need == null || Number.isNaN(need)) { toast('Bitte den Stand eintragen'); const n = $(lvHours(st) ? '#lv-hours' : '#lv-days', back); if (n) n.focus(); return; }
+      if (st.type === 'kind_stand' && !(+st.origin >= 1990)) { toast('Bitte das Jahr angeben'); const n = $('#lv-origin', back); if (n) n.focus(); return; }
+      const pos = v => Math.max(0, +v || 0);
+      const doc = {...(entry ? clone(entry) : {id: uid(), createdAt: Date.now()}), kind: t.kind, type: st.type, title: st.title, from: st.from, to: t.range ? st.to : st.from, half: !!st.half && st.from === st.to && !!t.range,
+        days: t.acc === 'ueber' && st.type !== 'abbau' ? null : pos(st.days),
+        hours: t.acc === 'ueber' ? (st.type === 'ue_stand' ? (+st.hours || 0) : pos(st.hours)) : null};
+      if (st.type === 'u_stand') doc.carry = pos(st.carry); else delete doc.carry;
+      if (st.type === 'kind_stand') doc.origin = +st.origin; else if (st.type === 'kind_ent' && st.origin) doc.origin = +st.origin; else delete doc.origin;
       save('leave', doc); closeModal();
-      S.leaveYear = leaveYear(doc);
+      S.leaveYear = Math.max(LV_MIN_YEAR, leaveYear(doc));
       toast(isNew ? `${t.name} eingetragen` : 'Buchung gespeichert');
     };
     back.onclick = async e => {
       if (e.target === back) return closeModal();
+      const ac = e.target.closest('[data-lacc]');
+      if (ac) { read(); if (ac.dataset.lacc !== grp()) setType(LV_DLG[ac.dataset.lacc].def); return; }
       const lt = e.target.closest('[data-lt]');
-      if (lt) { read(); const v = lt.dataset.lt; st.type = v === 'credit' ? 'anspruch' : v; if (v === 'kind_stand' || v === 'kind_spar') { st.days = st.days || 1; st.to = st.from; manual = true; redraw(); $$('[data-lt]', back).forEach(b => b.setAttribute('aria-pressed', b === lt)); return; } if (v === 'credit') { st.days = yearDays(); st.from = st.to = `${st.from.slice(0, 4)}-01-01`; } else if (!manual || LT[st.type].range) { st.days = null; st.hours = null; manual = false; } redraw(); $$('[data-lt]', back).forEach(b => b.setAttribute('aria-pressed', b === lt)); return; }
+      if (lt) { read(); setType(lt.dataset.lt); return; }
       const b = e.target.closest('[data-m]'); if (!b) return;
       if (b.dataset.m === 'no') closeModal();
       if (b.dataset.m === 'delete') { closeModal(); if (await confirmBox('Buchung löschen?', `„${entry.title || LT[entry.type].name}“ (${dmy(entry.from)}) wird gelöscht.`)) { removeDoc('leave', entry.id); toast('Buchung gelöscht'); } }
@@ -3174,12 +3352,14 @@ function leaveDialog(entry, preset) {
 }
 function leaveCsv(Y) {
   const rows = leaveRows(Y); const q = s => `"${String(s ?? '').replace(/"/g, '""')}"`;
-  const out = ['Datum;Bis;Art;Typ;Beschreibung;Menge;Einheit;Saldo'];
-  for (const {e, saldo} of rows) { const t = LT[e.type]; out.push([dmy(e.from), e.to && e.to !== e.from ? dmy(e.to) : '', t.badge, t.name, q(e.title || t.name), String(t.sign * leaveAmount(e) || leaveAmount(e)).replace('.', ','), t.kind === 'ueber' ? 'Std.' : 'Tage', saldo == null ? '' : String(saldo).replace('.', ',')].join(';')); }
-  const u = leaveStats(Y), o = overtimeStats(Y);
-  out.push('', `Urlaub ${Y};Anspruch ${fmtDays(u.anspruch)};Rest ${fmtDays(u.rest)};genommen ${fmtDays(u.taken)};geplant ${fmtDays(u.planned)};verfügbar ${fmtDays(u.avail)}`);
-  out.push(`Überstunden;Saldo heute ${fmtH(o.saldo)} h;aufgebaut ${fmtH(o.plus)} h;ausgeglichen ${fmtH(o.minus)} h`);
-  const ks = kindStats(); out.push(`Kind-Konto;angespart heute ${fmtDays(ks.now)} Tage;nach Planung ${fmtDays(ks.all)} Tage`);
+  const out = ['Datum;Bis;Art;Typ;Beschreibung;Menge;Einheit;Stand'];
+  for (const {e, saldo} of rows) { const t = LT[e.type]; out.push([dmy(e.from), e.to && e.to !== e.from ? dmy(e.to) : '', t.badge, t.name, q(e.title || t.name), String(t.stand ? standVal(e) : (t.sign * leaveAmount(e) || leaveAmount(e))).replace('.', ','), lvHours(e) ? 'Std.' : 'Tage', saldo == null ? '' : String(saldo).replace('.', ',')].join(';')); }
+  const u = leaveStats(Y), o = overtimeStats(Y), fv = fvdStats(), ks = kindStats(), su = sonderStats(Y);
+  out.push('', `Urlaub ${Y};verfügbar ${fmtDays(u.avail)};genommen ${fmtDays(u.taken)};geplant ${fmtDays(u.planned)};Übertrag ${Y - 1} übrig ${fmtDays(u.carryLeft)}`);
+  out.push(`Überstunden;Saldo heute ${fmtH(o.saldo)} h;aufgebaut ${Y} ${fmtH(o.plus)} h;abgebaut ${Y} ${fmtH(o.minus)} h`);
+  out.push(`FvD;offen heute ${fmtDays(fv.now)} Tage;nach Planung ${fmtDays(fv.all)} Tage`);
+  out.push(`Kind-Konto;angespart heute ${fmtDays(ks.now)} Tage;${[...ks.buckets.entries()].map(([y, v]) => `${y}: ${fmtDays(v)}`).join(' / ')}`);
+  out.push(`Sonderurlaub ${Y};Betreuung Kind ${fmtDays(su.betreuung.all)} Tage;Kind krank ${fmtDays(su.kindkrank.all)} Tage`);
   return out.join('\r\n');
 }
 
@@ -3713,7 +3893,7 @@ document.addEventListener('click', e => {
       render(); break;
     }
     case 'tpl-habit': save('habits', {id: uid(), name: v, color: PALETTE[S.habits.size % PALETTE.length], days: {}, order: S.habits.size, createdAt: Date.now()}); toast(`„${v}“ angelegt`); break;
-    case 'lv-year': S.leaveYear += +v; render(); break;
+    case 'lv-year': S.leaveYear = Math.max(LV_MIN_YEAR, S.leaveYear + +v); render(); break;
     case 'lv-new': leaveDialog(null, v); break;
     case 'lv-edit': { const en = S.leave.get(id); if (en) leaveDialog(en); break; }
     case 'lv-filter': S.leaveFilter = v; ls.set('ap.lvFilter', v); render(); break;
