@@ -8,7 +8,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-256.png">
 <link rel="apple-touch-icon" href="icon-256.png">
-<script>window.AP_WEB = {version: "1.13.0"};</script>
+<script>window.AP_WEB = {version: "1.14.0"};</script>
 <title>Arbeitsplaner</title>
 <style>
 @font-face{font-family:"Inter";src:url("fonts/inter.woff2") format("woff2");font-weight:100 900;font-display:swap}
@@ -785,6 +785,23 @@ button.hm-wrow:hover span{color:var(--accent-text)}
 .lv-card header small{font-size:13px;color:var(--fg-2)}
 .lv-card header .btn{height:36px;padding:0 12px;font-size:13px}
 .lv-tile{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;flex:none}
+.emb{display:block;object-fit:contain;user-select:none;-webkit-user-drag:none}
+.lv-tile.img{background:none;padding:0}
+.lv-tile.img .emb{width:100%;height:100%}
+.lv-card header .lv-tile.img{width:46px;height:46px}
+.lv-mini header .lv-tile.img{width:42px;height:42px}
+.lv-empty .emb.big{width:64px;height:64px;margin-bottom:6px}
+.hm-stat{position:relative;padding-right:96px}
+.hs-emb{position:absolute;right:22px;top:50%;transform:translateY(-50%);width:58px;height:58px}
+.bd-ic.img{background:none}
+.bd-ic.img .emb{width:28px;height:28px}
+.hm-card > header .emb.hd{width:30px;height:30px;margin:-4px 0}
+.hm-empty{display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px 20px 22px;text-align:center;color:var(--fg-2);font-size:14px}
+.hm-empty p{margin:0}
+.hm-empty .emb.big{width:72px;height:72px}
+.hm-card.todo .hm-empty{flex:1;justify-content:center}
+.rings.img span{background:none}
+.rings.img .emb{width:84px;height:84px}
 .lv-tile.u{background:var(--accent-soft);color:var(--accent-text)}
 .lv-tile.h{background:color-mix(in srgb, var(--ue) 16%, var(--card));color:var(--ue)}
 .lv-big{display:flex;align-items:baseline;gap:12px;margin:18px 0 16px;flex-wrap:wrap}
@@ -1396,6 +1413,7 @@ const ls = {
   get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
 };
+const emb = (n, cls = '') => `<img class="emb ${cls}" src="img/${n}.webp" alt="" aria-hidden="true" draggable="false">`;
 const ic = (n, cls = '') => `<svg class="i ${cls}" aria-hidden="true"><use href="#i-${n}"/></svg>`;
 
 /* ---------- Datum ---------- */
@@ -2281,7 +2299,7 @@ function emptyState(info) {
     const tm = dkey(addDays(new Date(), 1)); const n = openTasks().filter(t => t.due === tm).length;
     if (n) actions += `<button class="btn" data-act="pull-tomorrow">${ic('sunrise')}${n} ${n === 1 ? 'Aufgabe' : 'Aufgaben'} von morgen vorziehen</button>`;
   }
-  return `<div class="empty">${rings(icon)}<h2>${esc(h)}</h2><p>${esc(p)}</p>${actions ? `<div class="empty-actions">${actions}</div>` : ''}</div>${quickCard()}`;
+  return `<div class="empty">${S.sel.type === 'smart' ? `<div class="rings img"><span>${emb('erledigt')}</span></div>` : rings(icon)}<h2>${esc(h)}</h2><p>${esc(p)}</p>${actions ? `<div class="empty-actions">${actions}</div>` : ''}</div>${quickCard()}`;
 }
 const menuBtn = () => `<button class="sq-btn menu-btn" data-act="menu" aria-label="Menü öffnen">${ic('menu')}<span class="sdot ${S.sync}"></span></button>`;
 function renderTasks() {
@@ -2760,8 +2778,8 @@ function renderHome() {
   const u = leaveStats(Y), o = overtimeStats(Y), hasLeave = u.has;
   const stat = (view, icon, label, val, sub, extra = '') => `<button class="hm-stat" data-act="view" data-view="${view}"><span class="lab">${icon}${Array.isArray(label) ? `<span class="hl">${label[0]}</span><span class="hs">${label[1]}</span>` : label}</span><span class="val">${val}</span>${sub ? `<span class="hs-sub">${sub}</span>` : ''}${extra}</button>`;
   const stats = `<div class="hm-stats">
-    ${stat('leave', ic('case'), ['Urlaub verfügbar', 'Urlaub'], hasLeave ? `<b class="u">${fmtDays(u.avail)}</b><span>${u.avail === 1 ? 'Tag' : 'Tage'}</span>` : '<b class="u">–</b>', hasLeave ? (u.planned ? `nach Planung: ${fmtDays(u.after)} Tage` : 'nichts geplant') : 'noch nicht eingetragen')}
-    ${stat('leave', ic('clock', 'ue'), 'Überstunden', `<b class="${o.saldo < 0 ? 'neg' : 'h'}">${signed(o.saldo, fmtH) || '0,0'}</b><span>Std.</span>`, `≈ ${fmtNum(o.saldo / hoursPerDay(), 1)} Diensttage`)}
+    ${stat('leave', '', ['Urlaub verfügbar', 'Urlaub'], hasLeave ? `<b class="u">${fmtDays(u.avail)}</b><span>${u.avail === 1 ? 'Tag' : 'Tage'}</span>` : '<b class="u">–</b>', hasLeave ? (u.planned ? `nach Planung: ${fmtDays(u.after)} Tage` : 'nichts geplant') : 'noch nicht eingetragen', emb('urlaub', 'hs-emb'))}
+    ${stat('leave', '', 'Überstunden', `<b class="${o.saldo < 0 ? 'neg' : 'h'}">${signed(o.saldo, fmtH) || '0,0'}</b><span>Std.</span>`, `≈ ${fmtNum(o.saldo / hoursPerDay(), 1)} Diensttage`, emb('ueberstunden', 'hs-emb'))}
   </div>`;
 
   // Noch zu erledigen: alle offenen Aufgaben, nach Priorität (innerhalb: überfällig, dann nach Datum)
@@ -2771,7 +2789,7 @@ function renderHome() {
   const pCount = p => todo.filter(t => (t.priority || 0) === p).length;
   const trows = []; let lastP = null;
   for (const t of todo) { const p = t.priority || 0; if (p !== lastP) { trows.push(`<div class="hm-grp p${p}"><i></i><span>${PN[p]}</span><em>${pCount(p)}</em></div>`); lastP = p; } trows.push(homeTask(t)); }
-  const todoCard = `<section class="hm-card todo"><header><h2>Noch zu erledigen</h2><span class="hm-cnt">${todo.length || ''}</span><button class="hm-link" data-act="sel" data-type="smart" data-id="all">Alle Aufgaben</button></header>${trows.join('') || '<p class="hm-none">Alles erledigt – gerade ist nichts offen.</p>'}</section>`;
+  const todoCard = `<section class="hm-card todo"><header>${emb('erledigt', 'hd')}<h2>Noch zu erledigen</h2><span class="hm-cnt">${todo.length || ''}</span><button class="hm-link" data-act="sel" data-type="smart" data-id="all">Alle Aufgaben</button></header>${trows.join('') || `<div class="hm-empty">${emb('erledigt', 'big')}<p>Alles erledigt – gerade ist nichts offen.</p></div>`}</section>`;
 
   // Kompakte Monatsansicht
   const by = tasksByDay();
@@ -2789,7 +2807,7 @@ function renderHome() {
 
   // Geburtstage
   const nb = bdNext(4);
-  const gebs = `<section class="hm-card gebs"><header><h2>Geburtstage</h2><button class="hm-link" data-act="bd-manage">${nb.length ? 'Verwalten' : 'Eintragen'}</button></header>${nb.length ? `<div class="hm-soon-l">${nb.map(({b, k, in: d}) => `<button class="hm-soon ${d === 0 ? 'now' : ''}" data-act="bd-manage"><span class="bd-ic">${ic('cake')}</span><span class="sn">${esc(bdLabel(b, k))}</span><em>${d === 0 ? 'heute' : d === 1 ? 'morgen' : `${WDS[parseKey(k).getDay()]} ${dm(k)} · in ${d} T.`}</em></button>`).join('')}</div>` : `<p class="hm-none">Noch keine Geburtstage eingetragen.</p><div class="hm-gebs-add"><button class="btn" data-act="bd-manage">${ic('plus')}Geburtstage eintragen</button></div>`}</section>`;
+  const gebs = `<section class="hm-card gebs"><header>${emb('geburtstag', 'hd')}<h2>Geburtstage</h2><button class="hm-link" data-act="bd-manage">${nb.length ? 'Verwalten' : 'Eintragen'}</button></header>${nb.length ? `<div class="hm-soon-l">${nb.map(({b, k, in: d}) => `<button class="hm-soon ${d === 0 ? 'now' : ''}" data-act="bd-manage"><span class="bd-ic img">${emb('geburtstag')}</span><span class="sn">${esc(bdLabel(b, k))}</span><em>${d === 0 ? 'heute' : d === 1 ? 'morgen' : `${WDS[parseKey(k).getDay()]} ${dm(k)} · in ${d} T.`}</em></button>`).join('')}</div>` : `<div class="hm-empty">${emb('geburtstag', 'big')}<p>Noch keine Geburtstage eingetragen.</p><button class="btn" data-act="bd-manage">${ic('plus')}Geburtstage eintragen</button></div>`}</section>`;
 
   const html = `${stats}<div class="hm-grid">${monat}${todoCard}${gebs}${nextHtml('side-box hm-next')}</div>`;
   if (el.dataset.html === html) return; el.dataset.html = html;
@@ -3239,7 +3257,7 @@ function renderLeave() {
   if (u.kind) uFoot.push(`Davon ins Kind-Konto angespart: ${fmtDays(u.kind)} ${tageW(u.kind)}`);
   if (u.kzh || u.sonder) uFoot.push(`${u.kzh ? `KzH: ${fmtDays(u.kzh)} ${tageW(u.kzh)}` : ''}${u.kzh && u.sonder ? ' · ' : ''}${u.sonder ? `Sonstiger Sonderurlaub: ${fmtDays(u.sonder)} ${tageW(u.sonder)}` : ''} <span class="muted">(zählen nicht gegen den Urlaub)</span>`);
   // FvD, Kind-Konto, Sonderurlaub
-  const mini = (cls, color, icon, title, sub, body, preset) => `<section class="lv-mini" style="--mc:${color}"><header><span class="lv-tile ${cls}">${ic(icon)}</span><div><b>${title}</b><small>${sub}</small></div><button class="btn" data-act="lv-new" data-v="${preset}" title="Buchung eintragen" aria-label="${title}: Buchung eintragen">${ic('plus')}<span>Buchen</span></button></header>${body}</section>`;
+  const mini = (cls, color, icon, title, sub, body, preset) => `<section class="lv-mini" style="--mc:${color}"><header><span class="lv-tile img">${emb(icon)}</span><div><b>${title}</b><small>${sub}</small></div><button class="btn" data-act="lv-new" data-v="${preset}" title="Buchung eintragen" aria-label="${title}: Buchung eintragen">${ic('plus')}<span>Buchen</span></button></header>${body}</section>`;
   const fvdBody = fv.has ? `<div class="lm-num"><b>${fmtDays(fv.now)}</b><span>${tageW(fv.now)} FvD offen</span></div>${fv.all !== fv.now ? `<div class="lm-sub">nach Planung: ${fmtDays(fv.all)} ${tageW(fv.all)}</div>` : ''}`
     : `<button class="lv-hint" data-act="lv-new" data-v="fvd_stand">${ic('plus')}Stand FvD eintragen</button>`;
   const bk = [...k.buckets.entries()].filter(([, v]) => v !== 0);
@@ -3251,14 +3269,14 @@ function renderLeave() {
     <div class="vhead">${menuBtn()}<div class="ttl"><h1>Urlaub &amp; Überstunden</h1><div class="sub">Was du bekommen und was du verbraucht hast – ${standIn}</div></div><button class="btn" data-act="lv-export">${ic('download')}<span>Exportieren</span></button></div>
     <div class="lv-cards">
       <section class="lv-card">
-        <header><span class="lv-tile u">${ic('case')}</span><b>Urlaub</b><span class="sp"></span><button class="btn" data-act="lv-new" data-v="u_stand">${ic('edit')}<span>Stand eintragen</span></button></header>
+        <header><span class="lv-tile img">${emb('urlaub')}</span><b>Urlaub</b><span class="sp"></span><button class="btn" data-act="lv-new" data-v="u_stand">${ic('edit')}<span>Stand eintragen</span></button></header>
         <div class="lv-big"><b class="u">${fmtDays(u.avail)}</b><span>Tage verfügbar</span><span class="sp"></span><small>nach Planung: ${fmtDays(u.after)}</small></div>
         <div class="lv-bar"><i class="taken" style="width:${pT}%"></i><i class="plan" style="width:${pP}%"></i></div>
         <div class="lv-stats">${uStats.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('')}<div><b>${fmtDays(u.taken)}</b><span><i class="lg taken"></i>genommen</span></div><div><b>${fmtDays(u.planned)}</b><span><i class="lg plan"></i>geplant</span></div></div>
         ${uFoot.map(x => `<div class="lv-foot">${x}</div>`).join('')}${hints.join('')}
       </section>
       <section class="lv-card">
-        <header><span class="lv-tile h">${ic('clock')}</span><b>Überstunden</b><span class="sp"></span><button class="btn" data-act="lv-new" data-v="ue_stand">${ic('edit')}<span>Stand eintragen</span></button></header>
+        <header><span class="lv-tile img">${emb('ueberstunden')}</span><b>Überstunden</b><span class="sp"></span><button class="btn" data-act="lv-new" data-v="ue_stand">${ic('edit')}<span>Stand eintragen</span></button></header>
         <div class="lv-big"><b class="h">${signed(o.saldo, fmtH) || '0,0'}</b><span>Std. ${o.saldo < 0 ? 'im Minus' : 'Guthaben'}</span><span class="sp"></span><small>≈ ${fmtNum(o.saldo / hoursPerDay(), 1)} Diensttage${o.all !== o.saldo ? ` · nach Planung: ${fmtH(o.all)} h` : ''}</small></div>
         <div class="lv-chart">${bars}</div>
         <div class="lv-stats three"><div><b class="pos">${signed(o.plus, fmtH) || '0,0'}</b><span>aufgebaut ${Y}</span></div><div><b class="neg">${o.minus ? '−' + fmtH(o.minus) : '0,0'}</b><span>abgebaut ${Y}</span></div><div><b>${o.count}</b><span>Buchungen</span></div></div>
@@ -3266,9 +3284,9 @@ function renderLeave() {
       </section>
     </div>
     <div class="lv-minis">
-      ${mini('f', '#4FB8A9', 'sun', 'FvD', 'Freistellung vom Dienst', fvdBody, fv.has ? 'fvd_ab' : 'fvd_stand')}
-      ${mini('k', '#E879A9', 'heart', 'Kind-Konto', 'Tage je Jahr', kindBody, k.has ? 'kind_ent' : 'kind_stand')}
-      ${mini('s', '#B48CF0', 'user', 'Sonderurlaub', `In ${Y} genommene Tage`, suBody, 'betreuung')}
+      ${mini('f', '#4FB8A9', 'fvd', 'FvD', 'Freistellung vom Dienst', fvdBody, fv.has ? 'fvd_ab' : 'fvd_stand')}
+      ${mini('k', '#E879A9', 'kindkonto', 'Kind-Konto', 'Tage je Jahr', kindBody, k.has ? 'kind_ent' : 'kind_stand')}
+      ${mini('s', '#B48CF0', 'sonderurlaub', 'Sonderurlaub', `In ${Y} genommene Tage`, suBody, 'betreuung')}
     </div>
     <div class="mobile-only">${sideLeave()}</div>
   </div>`;
@@ -3431,7 +3449,7 @@ function bookingsDialog() {
     const Y = S.leaveYear, f = LV_GROUPS[S.leaveFilter] ? S.leaveFilter : 'all';
     const rows = leaveRows(Y).filter(r => f === 'all' || lvEffects(r.e).some(([a]) => LV_GROUPS[f].includes(a))).reverse();
     return `<div class="lvb-bar"><div class="lvb-yr"><button type="button" class="sq-btn" data-m="year" data-v="-1" aria-label="Vorheriges Jahr" ${Y <= LV_MIN_YEAR ? 'disabled' : ''}>${ic('left')}</button><b>${Y}</b><button type="button" class="sq-btn" data-m="year" data-v="1" aria-label="Nächstes Jahr">${ic('right')}</button></div><div class="seg" role="group" aria-label="Filter">${[['all', 'Alle'], ['urlaub', 'Urlaub'], ['ueber', 'Überst./FvD'], ['kind', 'Kind']].map(([k, v]) => `<button type="button" data-m="filter" data-v="${k}" aria-pressed="${f === k}">${v}</button>`).join('')}</div></div>
-      <div class="lv-table lvb">${rows.length ? `<div class="lv-thead"><span>Datum</span><span>Art</span><span>Beschreibung</span><span class="r">Menge</span><span class="r">Stand</span></div>${rows.map(leaveRowHtml).join('')}` : `<div class="lv-empty">${ic('case')}<b>Keine Buchungen für ${Y}</b><span>${f === 'all' ? 'Trag zuerst deine Stände ein.' : 'Für diesen Filter gibt es nichts.'}</span></div>`}</div>`;
+      <div class="lv-table lvb">${rows.length ? `<div class="lv-thead"><span>Datum</span><span>Art</span><span>Beschreibung</span><span class="r">Menge</span><span class="r">Stand</span></div>${rows.map(leaveRowHtml).join('')}` : `<div class="lv-empty">${emb('urlaub', 'big')}<b>Keine Buchungen für ${Y}</b><span>${f === 'all' ? 'Trag zuerst deine Stände ein.' : 'Für diesen Filter gibt es nichts.'}</span></div>`}</div>`;
   };
   openModal(`<div class="m-head"><h3>Buchungen</h3><button type="button" class="btn primary" data-m="new">${ic('plus')}<span>Neue Buchung</span></button><button class="icon-btn" type="button" data-m="no" aria-label="Schließen">${ic('x')}</button></div><div class="m-body" id="lvbBody">${body()}</div>`, back => {
     const redraw = () => { $('#lvbBody', back).innerHTML = body(); render(); };
@@ -3588,7 +3606,7 @@ function bdNext(n = 5) {
 const bdDate = b => `${b.date.slice(3)}.${b.date.slice(0, 2)}.${b.year || ''}`;
 function sideBirthdays() {
   const nx = bdNext(5);
-  return `<div class="side-label"><span>Geburtstage</span><button class="hm-link" data-act="bd-manage">${nx.length ? 'Verwalten' : 'Eintragen'}</button></div>${nx.length ? `<div class="bd-side">${nx.map(({b, k, in: d}) => `<button data-act="bd-manage"><span class="bd-ic">${ic('cake')}</span><span class="bd-n">${esc(bdLabel(b, k))}</span><em>${d === 0 ? 'heute' : d === 1 ? 'morgen' : `${dm(k)} · in ${d} T.`}</em></button>`).join('')}</div>` : '<p class="hint">Noch keine Geburtstage eingetragen.</p>'}`;
+  return `<div class="side-label"><span>Geburtstage</span><button class="hm-link" data-act="bd-manage">${nx.length ? 'Verwalten' : 'Eintragen'}</button></div>${nx.length ? `<div class="bd-side">${nx.map(({b, k, in: d}) => `<button data-act="bd-manage"><span class="bd-ic img">${emb('geburtstag')}</span><span class="bd-n">${esc(bdLabel(b, k))}</span><em>${d === 0 ? 'heute' : d === 1 ? 'morgen' : `${dm(k)} · in ${d} T.`}</em></button>`).join('')}</div>` : '<p class="hint">Noch keine Geburtstage eingetragen.</p>'}`;
 }
 // Eine Zeile wie „Max Mustermann 12.03.1985“, „Oma: 3.7.“ oder „12.03.85 Anna“
 function bdParse(line) {
@@ -3607,7 +3625,7 @@ function birthdaysDialog() {
     const all = bdAll().map(b => { let k = bdKey(b, y); if (k < td) k = bdKey(b, y + 1); return {b, k}; }).sort((a, c) => a.k.localeCompare(c.k) || a.b.name.localeCompare(c.b.name, 'de'));
     return `<div class="bd-add"><input id="bd-name" type="text" maxlength="60" placeholder="Name" autocomplete="off"><input id="bd-date" type="text" maxlength="10" placeholder="TT.MM.JJJJ" inputmode="decimal" autocomplete="off"><button type="button" class="btn primary" data-m="add">${ic('plus')}<span>Hinzufügen</span></button></div>
       <p class="hint">Das Jahr ist freiwillig – mit Jahr steht das Alter im Kalender.</p>
-      <div class="bd-list">${all.length ? all.map(({b, k}) => { const d = diffDays(k, td); return `<div class="bd-row"><span class="bd-ic">${ic('cake')}</span><div><b>${esc(b.name)}</b><small>${bdDate(b)}${d === 0 ? ' · heute' : d === 1 ? ' · morgen' : ` · in ${d} Tagen`}${bdAge(b, k) > 0 ? ` · wird ${bdAge(b, k)}` : ''}</small></div><button type="button" class="icon-btn" data-m="del" data-id="${b.id}" aria-label="${esc(b.name)} löschen">${ic('trash')}</button></div>`; }).join('') : '<p class="hint" style="margin:0">Noch keine Geburtstage eingetragen.</p>'}</div>
+      <div class="bd-list">${all.length ? all.map(({b, k}) => { const d = diffDays(k, td); return `<div class="bd-row"><span class="bd-ic img">${emb('geburtstag')}</span><div><b>${esc(b.name)}</b><small>${bdDate(b)}${d === 0 ? ' · heute' : d === 1 ? ' · morgen' : ` · in ${d} Tagen`}${bdAge(b, k) > 0 ? ` · wird ${bdAge(b, k)}` : ''}</small></div><button type="button" class="icon-btn" data-m="del" data-id="${b.id}" aria-label="${esc(b.name)} löschen">${ic('trash')}</button></div>`; }).join('') : '<p class="hint" style="margin:0">Noch keine Geburtstage eingetragen.</p>'}</div>
       <details class="bd-import" ${all.length ? '' : 'open'}><summary>Ganze Liste einfügen</summary><textarea id="bd-text" rows="6" placeholder="Eine Zeile pro Person, z. B.&#10;Max Mustermann 12.03.1985&#10;Oma: 3.7.&#10;Anna Müller – 24.12.90"></textarea><button type="button" class="btn" data-m="import">${ic('upload')}Liste übernehmen</button></details>`;
   };
   openModal(`<div class="m-head"><h3>Geburtstage</h3><button class="icon-btn" type="button" data-m="no" aria-label="Schließen">${ic('x')}</button></div><div class="m-body" id="bdBody">${body()}</div><div class="m-foot"><span class="sp"></span><button type="button" class="btn primary" data-m="no">Fertig</button></div>`, back => {
