@@ -8,7 +8,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-256.png">
 <link rel="apple-touch-icon" href="icon-256.png">
-<script>window.AP_WEB = {version: "1.16.0"};</script>
+<script>window.AP_WEB = {version: "1.16.1"};</script>
 <title>Arbeitsplaner</title>
 <style>
 @font-face{font-family:"Inter";src:url("fonts/inter.woff2") format("woff2");font-weight:100 900;font-display:swap}
@@ -591,7 +591,8 @@ body.detail-big .d-head{padding:16px 18px 14px 28px}
 
 /* Übersicht */
 #v-home{container-type:inline-size}
-.home{max-width:1240px;margin:0 auto}
+.home{max-width:1720px;margin:0 auto}
+@media (min-width:900px){ #v-home.view{padding:24px 30px 26px} }
 /* PC: Woche und Heute füllen die Bildschirmhöhe */
 @container (min-width:980px){
   .home{height:100%;display:flex;flex-direction:column}
@@ -604,7 +605,7 @@ body.detail-big .d-head{padding:16px 18px 14px 28px}
 .hm-bar .brand{font-size:19px}
 .hm-sync{display:flex;align-items:center;gap:8px;height:46px;padding:0 10px;border-radius:12px;font-size:13.5px;color:var(--fg-2)}
 .hm-sync:hover{background:var(--hover);color:var(--fg)}
-.hm-head{display:flex;align-items:center;flex-wrap:wrap;gap:14px 28px;margin-bottom:22px}
+.hm-head{display:flex;align-items:center;flex-wrap:wrap;gap:14px 28px;margin-bottom:14px}
 .hm-head .ttl{flex:1 1 300px;min-width:0}
 .hm-logo,.hm-search{display:none!important}
 .hm-date{font-size:15px;font-weight:600;color:var(--accent-text)}
@@ -619,18 +620,19 @@ body.detail-big .d-head{padding:16px 18px 14px 28px}
 .hm-clock{display:flex;align-items:baseline;gap:5px;margin-left:6px;padding-left:22px;border-left:1px solid var(--line-2)}
 .hm-clock b{font-family:var(--font-head);font-size:46px;font-weight:700;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .hm-clock small{width:2ch;font-size:17px;font-weight:600;color:var(--accent-text);font-variant-numeric:tabular-nums}
-.hm-qa{padding:14px 16px 16px;border-radius:22px;border:1px solid var(--accent-line);background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, var(--card)), color-mix(in srgb, var(--accent) 4%, var(--card)) 70%);box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 7%, transparent), 0 10px 30px rgba(0,0,0,.25)}
-.hm-qa-h{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;margin:0 2px 10px}
+.hm-qa{padding:12px 14px 14px;border-radius:22px;border:1px solid var(--accent-line);background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, var(--card)), color-mix(in srgb, var(--accent) 4%, var(--card)) 70%);box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 7%, transparent), 0 10px 30px rgba(0,0,0,.25)}
+.hm-qa-h{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;margin:0 2px 8px}
+@container (min-width:980px){ .hm-qa .qa-opts{flex-wrap:nowrap} .hm-qa .qa-f input[type=date]{width:112px} .hm-qa .qa-f input[type=time]{width:74px} .hm-qa .qa-type button{padding:0 10px} }
 .hm-qa-h .i{width:16px;height:16px;color:var(--accent-text);align-self:center}
 .hm-qa-h b{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-text)}
 .hm-qa-h small{font-size:12.5px;color:var(--fg-2)}
 .hm-qa .qa{background:var(--panel);border-color:var(--accent-line)}
 .hm-qa .qa:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent)}
 .hm-head h1{font-size:40px;font-weight:700;line-height:1.1;margin-top:4px}
-.hm-qa{flex:0 1 720px;min-width:0}
+.hm-qa{flex:1 1 520px;min-width:0}
 .hm-qa .qa-opts{margin-bottom:8px}
-.hm-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:14px}
-.hm-stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 20px;text-align:left;display:flex;flex-direction:column;gap:6px;min-width:0;transition:border-color .12s,background .12s}
+.hm-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:12px}
+.hm-stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:11px 20px;text-align:left;display:flex;flex-direction:column;gap:6px;min-width:0;transition:border-color .12s,background .12s}
 .hm-stat:hover{border-color:var(--line-2);background:var(--card-2)}
 .hm-stat .lab{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--fg-2)}
 .hm-stat .lab .i{width:17px;height:17px;color:var(--accent-text)}
@@ -643,7 +645,7 @@ body.detail-big .d-head{padding:16px 18px 14px 28px}
 .hm-stat .hs-sub{font-size:13px;color:var(--fg-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hm-prog{height:5px;border-radius:3px;background:var(--card-2);overflow:hidden;margin-top:8px}
 .hm-prog i{display:block;height:100%;background:var(--accent);border-radius:3px}
-.hm-grid{display:grid;gap:14px;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-areas:"monat monat monat monat monat monat monat todo todo todo todo todo" "monat monat monat monat monat monat monat gebs gebs gebs gebs gebs"}
+.hm-grid{display:grid;gap:14px;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-areas:"monat monat monat monat monat monat monat todo todo todo todo todo" "monat monat monat monat monat monat monat gebs gebs gebs gebs gebs";grid-template-columns:repeat(12,minmax(0,1fr))}
 .hm-card.monat{grid-area:monat} .hm-card.todo{grid-area:todo} .hm-card.gebs{grid-area:gebs}
 .hm-card.todo{height:0;min-height:100%;overflow-y:auto}
 .hm-card.todo > header{position:sticky;top:0;z-index:1;background:var(--card);border-radius:18px 18px 0 0}
@@ -818,7 +820,7 @@ button.hm-wrow:hover span{color:var(--accent-text)}
 .lv-mini header .lv-tile.img{width:42px;height:42px}
 .lv-empty .emb.big{width:64px;height:64px;margin-bottom:6px}
 .hm-stat{position:relative;padding-right:96px}
-.hs-emb{position:absolute;right:22px;top:50%;transform:translateY(-50%);width:58px;height:58px}
+.hs-emb{position:absolute;right:22px;top:50%;transform:translateY(-50%);width:52px;height:52px}
 .bd-ic.img{background:none}
 .bd-ic.img .emb{width:28px;height:28px}
 .hm-card > header .emb.hd{width:30px;height:30px;margin:-4px 0}
@@ -826,6 +828,12 @@ button.hm-wrow:hover span{color:var(--accent-text)}
 .hm-empty p{margin:0}
 .hm-empty .emb.big{width:72px;height:72px}
 .hm-card.todo .hm-empty{flex:1;justify-content:center}
+.hm-card.gebs .hm-empty{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:10px 14px;padding:0 20px 16px;text-align:left}
+.hm-card.gebs .hm-empty .emb.big{width:40px;height:40px}
+.hm-card.gebs .hm-empty p{flex:1;min-width:140px}
+.hm-card.gebs > header{padding-bottom:10px}
+.hm-card.gebs .hm-empty .btn{display:none}
+@container (min-width:980px){ .hm-head .ttl{flex:0 0 auto} }
 .rings.img span{background:none}
 .rings.img .emb{width:84px;height:84px}
 .lv-tile.u{background:var(--accent-soft);color:var(--accent-text)}

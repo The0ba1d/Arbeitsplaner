@@ -1,5 +1,5 @@
 {
-  "version": "1.16.0",
+  "version": "1.16.1",
   "date": "2026-11-24",
-  "notes": "10 neue eigene Symbole: Kalender, Eingang, Suche, freie Tage, Synchronisierung, offline, Update, Personen, Papierkorb und Einstellungen."
+  "notes": "Übersicht nutzt den Platz besser: weniger Rand, Schnell-Erfassen in einer Zeile, mehr Raum für „Noch zu erledigen“."
 }
