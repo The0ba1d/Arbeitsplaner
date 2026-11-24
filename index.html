@@ -8,7 +8,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-256.png">
 <link rel="apple-touch-icon" href="icon-256.png">
-<script>window.AP_WEB = {version: "1.11.0"};</script>
+<script>window.AP_WEB = {version: "1.12.0"};</script>
 <title>Arbeitsplaner</title>
 <style>
 @font-face{font-family:"Inter";src:url("fonts/inter.woff2") format("woff2");font-weight:100 900;font-display:swap}
@@ -113,7 +113,7 @@ h1,h2,h3{font-family:var(--font-head);margin:0;letter-spacing:-.02em;text-wrap:b
 .tpl .i{margin-left:auto;color:var(--accent-text)}
 .session{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--fg-2)}
 .session b{color:var(--fg);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.viewbar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;padding:6px;border-radius:18px;background:var(--card)}
+.viewbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:6px;border-radius:18px;background:var(--card)}
 .vb{position:relative;height:44px;border-radius:13px;display:grid;place-items:center;color:var(--fg-2);transition:background .12s,color .12s}
 .vb:hover{background:var(--hover);color:var(--fg)}
 .vb.on{background:var(--accent);color:var(--on-accent)}
@@ -737,6 +737,7 @@ button.hm-wrow:hover span{color:var(--accent-text)}
 .lv-card header{display:flex;align-items:center;gap:12px}
 .lv-card header b{font-family:var(--font-head);font-size:18px;font-weight:700}
 .lv-card header small{font-size:13px;color:var(--fg-2)}
+.lv-card header .btn{height:36px;padding:0 12px;font-size:13px}
 .lv-tile{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;flex:none}
 .lv-tile.u{background:var(--accent-soft);color:var(--accent-text)}
 .lv-tile.h{background:color-mix(in srgb, var(--ue) 16%, var(--card));color:var(--ue)}
@@ -872,6 +873,37 @@ button.hm-wrow:hover span{color:var(--accent-text)}
 /* Schulferien */
 .cell.fer{background-image:linear-gradient(to bottom, color-mix(in srgb, #3CC0C0 75%, transparent) 0 3px, transparent 3px)}
 .wcol.fer{box-shadow:inset 0 3px 0 #3CC0C0}
+.bchip{display:flex;align-items:center;gap:5px;min-width:0;padding:2px 7px;margin-bottom:3px;border-radius:7px;font-size:11.5px;font-weight:600;line-height:1.45;cursor:pointer;color:color-mix(in srgb, #FF8A5B 80%, var(--fg));background:color-mix(in srgb, #FF8A5B 15%, transparent)}
+.bchip .i{width:13px;height:13px;flex:none}
+.bchip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bd-side{display:flex;flex-direction:column;gap:2px;margin-bottom:8px}
+.bd-side button{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:10px;text-align:left;min-width:0}
+.bd-side button:hover{background:var(--hover)}
+.bd-ic{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;flex:none;color:#FF8A5B;background:color-mix(in srgb, #FF8A5B 15%, transparent)}
+.bd-ic .i{width:15px;height:15px}
+.bd-n{flex:1;min-width:0;font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bd-side em{font-style:normal;font-size:12px;color:var(--fg-2);white-space:nowrap}
+.side-label .hm-link{margin-left:auto;flex:none;white-space:nowrap;overflow:visible;letter-spacing:0;text-transform:none;font-size:12.5px}
+.bd-add{display:grid;grid-template-columns:minmax(0,1fr) 130px auto;gap:8px}
+.bd-add input{height:44px;padding:0 12px;border-radius:12px;background:var(--card);border:1px solid var(--line);min-width:0}
+.bd-add input:focus{border-color:var(--accent-line)}
+.bd-add .btn{height:44px}
+.bd-list{display:flex;flex-direction:column;gap:2px;margin-top:14px;max-height:min(42vh,380px);overflow-y:auto}
+.bd-row{display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:12px}
+.bd-row:hover{background:var(--card)}
+.bd-row > div{flex:1;min-width:0}
+.bd-row b{display:block;font-weight:500;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bd-row small{display:block;font-size:12.5px;color:var(--fg-2)}
+.bd-row .icon-btn{width:34px;height:34px;background:transparent;color:var(--fg-3)}
+.bd-row .icon-btn:hover{color:var(--p-high)}
+.bd-import{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+.bd-import summary{cursor:pointer;font-weight:600;font-size:14px;color:var(--accent-text)}
+.bd-import textarea{width:100%;margin:10px 0;padding:10px 12px;border-radius:12px;background:var(--card);border:1px solid var(--line);resize:vertical;line-height:1.5;font-size:14px}
+.hm-bd{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;margin-bottom:8px;border-radius:12px;text-align:left;font-weight:600;color:color-mix(in srgb, #FF8A5B 85%, var(--fg));background:color-mix(in srgb, #FF8A5B 12%, transparent)}
+.hm-bd .i{width:18px;height:18px;flex:none}
+.hm-wrow.bd span{display:flex;align-items:center;gap:6px;color:color-mix(in srgb, #FF8A5B 85%, var(--fg))}
+.hm-wrow.bd .i{width:14px;height:14px}
+@media (max-width:639px){ .bd-add{grid-template-columns:1fr 1fr} .bd-add .btn{grid-column:1 / -1} .cell .bchip{display:none} }
 .fer-name{font-size:11px;font-weight:600;color:color-mix(in srgb, #3CC0C0 70%, var(--fg));overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fer-name.big{font-size:13px;margin-top:4px}
 
@@ -1239,6 +1271,7 @@ window.DEFAULT_THEME = 'glut-bernstein';
   <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V19a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H5.5A1.5 1.5 0 0 1 4 19Z"/></symbol>
   <symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
   <symbol id="i-expand" viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6M20 4l-6.5 6.5M4 20l6.5-6.5"/></symbol>
+  <symbol id="i-cake" viewBox="0 0 24 24"><path d="M4 21h16M5 21v-6.5A2.5 2.5 0 0 1 7.5 12h9a2.5 2.5 0 0 1 2.5 2.5V21M5 16.5c1.2.9 2.4.9 3.5 0s2.3-.9 3.5 0 2.3.9 3.5 0 2.3-.9 3.5 0M12 12V9M12 6.5c-.9-.7-.9-2 0-3 .9 1 .9 2.3 0 3Z"/></symbol>
   <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M14.5 4v16"/></symbol>
 </svg>
 
@@ -1273,9 +1306,6 @@ window.DEFAULT_THEME = 'glut-bernstein';
         </div>
       </section>
       <section class="view" id="v-calendar" hidden></section>
-      <section class="view" id="v-matrix" hidden></section>
-      <section class="view" id="v-focus" hidden></section>
-      <section class="view" id="v-habits" hidden></section>
       <section class="view" id="v-leave" hidden></section>
     </main>
     <aside class="detail card-panel" id="detail" aria-label="Aufgabendetails"></aside>
@@ -1361,16 +1391,13 @@ const VIEWS = [
   {id: 'home', hash: 'uebersicht', name: 'Übersicht', icon: 'home'},
   {id: 'tasks', hash: 'aufgaben', name: 'Aufgaben', icon: 'tasks'},
   {id: 'calendar', hash: 'kalender', name: 'Kalender', icon: 'cal'},
-  {id: 'matrix', hash: 'matrix', name: 'Matrix', icon: 'grid'},
-  {id: 'focus', hash: 'fokus', name: 'Fokus', icon: 'timer'},
-  {id: 'habits', hash: 'gewohnheiten', name: 'Gewohnheiten', icon: 'habit'},
   {id: 'leave', hash: 'urlaub', name: 'Urlaub & Überstunden', icon: 'case'}
 ];
-const COLLS = ['tasks', 'lists', 'habits', 'focus', 'settings', 'leave', 'filters', 'templates'];
+const COLLS = ['tasks', 'lists', 'habits', 'focus', 'settings', 'leave', 'filters', 'templates', 'birthdays'];
 
 /* ---------- Zustand ---------- */
 const S = {
-  tasks: new Map(), lists: new Map(), habits: new Map(), focus: new Map(), settings: new Map(), leave: new Map(), filters: new Map(), templates: new Map(),
+  tasks: new Map(), lists: new Map(), habits: new Map(), focus: new Map(), settings: new Map(), leave: new Map(), filters: new Map(), templates: new Map(), birthdays: new Map(),
   leaveYear: Math.max(2026, new Date().getFullYear()), leaveFilter: ls.get('ap.lvFilter', 'all'), qaOff: new Set(), habitMode: ls.get('ap.habitMode', 'week'),
   loaded: false, got: new Set(), mode: null, sync: 'connecting',
   view: 'tasks', sel: ls.get('ap.sel', {type: 'smart', id: 'today'}),
@@ -1986,9 +2013,6 @@ function doRender() {
   if (S.view === 'home') renderHome();
   else if (S.view === 'tasks') renderTasks();
   else if (S.view === 'calendar') renderCalendar();
-  else if (S.view === 'matrix') renderMatrix();
-  else if (S.view === 'focus') renderFocus();
-  else if (S.view === 'habits') renderHabits();
   else if (S.view === 'leave') renderLeave();
   renderDetail();
   const tagOpts = allTags().map(([g]) => `<option value="${esc(g)}"></option>`).join(''); const to = $('#tagOptions'); if (to.dataset.v !== tagOpts) { to.innerHTML = tagOpts; to.dataset.v = tagOpts; }
@@ -1998,8 +2022,8 @@ function doRender() {
 function renderNav() {
   const vb = $('#viewbar'), tb = $('#tabbar');
   if (!vb.dataset.ready) {
-    vb.innerHTML = VIEWS.map(v => `<button class="vb" data-act="view" data-view="${v.id}" aria-label="${v.name}" title="${v.name}">${ic(v.icon)}${v.id === 'focus' ? '<span class="tbadge" hidden></span>' : ''}</button>`).join('');
-    tb.innerHTML = VIEWS.map(v => `<button class="tab ${MORE_VIEWS.includes(v.id) ? 'tab-x' : ''}" data-act="view" data-view="${v.id}">${ic(v.icon)}<span>${v.id === 'leave' ? 'Urlaub' : v.name}</span></button>`).join('') + `<button class="tab tab-more" data-act="more">${ic('more')}<span>Mehr</span></button>`;
+    vb.innerHTML = VIEWS.map(v => `<button class="vb" data-act="view" data-view="${v.id}" aria-label="${v.name}" title="${v.name}">${ic(v.icon)}</button>`).join('');
+    tb.innerHTML = VIEWS.map(v => `<button class="tab ${MORE_VIEWS.includes(v.id) ? 'tab-x' : ''}" data-act="view" data-view="${v.id}">${ic(v.icon)}<span>${v.id === 'leave' ? 'Urlaub' : v.name}</span></button>`).join('') + (MORE_VIEWS.length ? `<button class="tab tab-more" data-act="more">${ic('more')}<span>Mehr</span></button>` : '');
     vb.dataset.ready = '1';
   }
   const tm = $('.tab-more'); if (tm) tm.classList.toggle('on', MORE_VIEWS.includes(S.view));
@@ -2096,11 +2120,12 @@ function sideCalendar(suffix = '') {
   const k = S.cal.day, d = parseKey(k), items = tasksByDay().get(k) || [];
   const rl = relLabel(k); const title = ['Heute', 'Morgen', 'Gestern', 'Übermorgen'].includes(rl) ? rl : WD[d.getDay()];
   const fer = ferienOf(k), lvs = leaveByDay(k, k).get(k) || [];
-  let h = `<div class="side-card"><h3>${esc(title)}</h3><div class="sub">${d.getDate()}. ${MON[d.getMonth()]} ${d.getFullYear()} · KW ${isoWeek(d)}</div>${holidayOf(k) ? `<div class="hol-name big">${esc(holidayOf(k))}</div>` : ''}${fer ? `<div class="fer-name big">Schulferien: ${esc(fer)}</div>` : ''}${lvs.length ? `<div class="lv-day">${lvs.map(lchip).join('')}</div>` : ''}
+  let h = `<div class="side-card"><h3>${esc(title)}</h3><div class="sub">${d.getDate()}. ${MON[d.getMonth()]} ${d.getFullYear()} · KW ${isoWeek(d)}</div>${holidayOf(k) ? `<div class="hol-name big">${esc(holidayOf(k))}</div>` : ''}${fer ? `<div class="fer-name big">Schulferien: ${esc(fer)}</div>` : ''}${bdOn(k).length ? `<div class="lv-day">${bdOn(k).map(b => bchip(b, k)).join('')}</div>` : ''}${lvs.length ? `<div class="lv-day">${lvs.map(lchip).join('')}</div>` : ''}
     <label class="qa small" for="qa-day${suffix}">${ic('plus')}<input id="qa-day${suffix}" type="text" placeholder="Aufgabe für diesen Tag" autocomplete="off" enterkeyhint="done"></label>
     ${items.length ? `<div>${items.map(miniTask).join('')}</div>` : '<p class="hint">Für diesen Tag ist nichts geplant.</p>'}</div>`;
   const nodate = openTasks().filter(t => !t.due).sort(cmpTask);
   if (nodate.length) h += `<div class="side-label"><span>Ohne Datum</span><span class="cnt-s">${nodate.length}</span></div><div class="nodate">${nodate.slice(0, 20).map(t => `<div class="drag-item" data-drag-task="${t.id}" data-act="open-task" data-id="${t.id}" role="button" tabindex="0">${ic('grip')}<span class="mt-title">${t.title ? esc(t.title) : 'Ohne Titel'}</span></div>`).join('')}${nodate.length > 20 ? `<p class="hint">+${nodate.length - 20} weitere</p>` : ''}<p class="hint">In den Kalender ziehen, um ein Datum zu setzen.</p></div>`;
+  h += sideBirthdays();
   const lists = sortedLists();
   if (lists.length) h += `<div class="side-label"><span>Listen</span></div><div class="legend">${lists.map(l => `<span><i class="ldot" style="--c:${esc(l.color)}"></i>${esc(l.name)}</span>`).join('')}</div>`;
   return h;
@@ -2124,7 +2149,7 @@ function sideHabits() {
 }
 function renderSidebar() {
   const el = $('#sideContent');
-  const html = S.view === 'home' ? sideHome() : S.view === 'calendar' ? sideCalendar() : S.view === 'matrix' ? sideMatrix() : S.view === 'focus' ? sideFocus() : S.view === 'habits' ? sideHabits() : S.view === 'leave' ? sideLeave() : sideTasks();
+  const html = S.view === 'home' ? sideHome() : S.view === 'calendar' ? sideCalendar() : S.view === 'leave' ? sideLeave() : sideTasks();
   if (el.dataset.html === html) return; el.dataset.html = html;
   withFocus(() => { el.innerHTML = html; });
 }
@@ -2190,7 +2215,6 @@ function emptyState(info) {
   if (S.sel.type === 'smart' && S.sel.id === 'today') {
     const tm = dkey(addDays(new Date(), 1)); const n = openTasks().filter(t => t.due === tm).length;
     if (n) actions += `<button class="btn" data-act="pull-tomorrow">${ic('sunrise')}${n} ${n === 1 ? 'Aufgabe' : 'Aufgaben'} von morgen vorziehen</button>`;
-    actions += `<button class="btn" data-act="start-focus">${ic('timer')}Fokus-Sitzung starten</button>`;
   }
   return `<div class="empty">${rings(icon)}<h2>${esc(h)}</h2><p>${esc(p)}</p>${actions ? `<div class="empty-actions">${actions}</div>` : ''}</div>${quickCard()}`;
 }
@@ -2231,10 +2255,10 @@ function renderTasks() {
     const open = (info.all ? liveTasks() : openTasks()).filter(info.filter).sort(cmpTask);
     const opts = {hideList: S.sel.type === 'list'};
     const odAct = n => n ? `<button class="g-act" data-act="overdue-today">Alle auf heute</button>` : '';
-    html = (S.sel.type === 'smart' && S.sel.id === 'today' ? habitsTodayStrip() : '') + groupByDate(open).map(g => groupHtml(g.k, g.label, g.tasks, opts, g.k === 'overdue' ? 'late' : '', g.k === 'overdue' ? odAct(g.tasks.length) : '')).join('');
+    html = groupByDate(open).map(g => groupHtml(g.k, g.label, g.tasks, opts, g.k === 'overdue' ? 'late' : '', g.k === 'overdue' ? odAct(g.tasks.length) : '')).join('');
     let done = [];
     if (info.doneFilter && S.showDone) { done = liveTasks().filter(t => t.done && info.doneFilter(t)).sort((a, b) => (b.completedAt || 0) - (a.completedAt || 0)).slice(0, 50); if (done.length) html += groupHtml('done', 'Erledigt', done, opts); }
-    if (!open.length && !done.length) html = (S.sel.type === 'smart' && S.sel.id === 'today' ? habitsTodayStrip() : '') + emptyState(info);
+    if (!open.length && !done.length) html = emptyState(info);
   }
   if (el.dataset.html !== html) { el.innerHTML = html; el.dataset.html = html; }
 }
@@ -2348,7 +2372,7 @@ const chip = t => `<div class="chip ${t.done ? 'done' : ''} ${isEvent(t) ? 'ev' 
 function planGrid(start, by, lv) {
   const td = todayKey(), H0 = 6, H1 = 23, ROW = 48; const days = [0, 1, 2, 3, 4, 5, 6].map(i => addDays(start, i));
   const head = `<div class="plan-head"><div></div>${days.map(d => { const k = dkey(d); return `<div class="${k === td ? 'today' : ''} ${dayClass(d)}" data-act="cal-day" data-day="${k}" role="button" tabindex="0"><b>${d.getDate()}</b><span>${WDS[d.getDay()]}</span></div>`; }).join('')}</div>`;
-  const all = `<div class="plan-all"><div>ganz­tägig</div>${days.map(d => { const k = dkey(d); const items = (by.get(k) || []).filter(t => !t.time); const hol = holidayOf(k), fer = ferienOf(k); return `<div class="${dayClass(d)}" data-drop-day="${k}">${hol ? `<div class="hol-name">${esc(hol)}</div>` : ''}${fer && !hol ? `<div class="fer-name">${esc(fer)}</div>` : ''}${(lv.get(k) || []).map(lchip).join('')}${items.map(chip).join('')}</div>`; }).join('')}</div>`;
+  const all = `<div class="plan-all"><div>ganz­tägig</div>${days.map(d => { const k = dkey(d); const items = (by.get(k) || []).filter(t => !t.time); const hol = holidayOf(k), fer = ferienOf(k); return `<div class="${dayClass(d)}" data-drop-day="${k}">${hol ? `<div class="hol-name">${esc(hol)}</div>` : ''}${fer && !hol ? `<div class="fer-name">${esc(fer)}</div>` : ''}${bdOn(k).map(b => bchip(b, k)).join('')}${(lv.get(k) || []).map(lchip).join('')}${items.map(chip).join('')}</div>`; }).join('')}</div>`;
   const hours = []; for (let h = H0; h < H1; h++) hours.push(h);
   const now = new Date(); const nowTop = ((now.getHours() + now.getMinutes() / 60) - H0) * ROW;
   const cols = days.map(d => {
@@ -2376,9 +2400,10 @@ function renderCalendar() {
         const d = addDays(ws, i); const k = dkey(d); const items = by.get(k) || []; const lvs = lv.get(k) || [];
         const hol = holidayOf(k), fer = ferienOf(k);
         const cls = [d.getMonth() !== a.getMonth() ? 'out' : '', k === td ? 'today' : '', k === c.day ? 'sel' : '', dayClass(d), fer ? 'fer' : ''].join(' ');
-        const tip = [hol, fer, ...lvs.map(e => LT[e.type].cal)].filter(Boolean).join(' · ');
-        const max = Math.max(1, 3 - lvs.length);
-        cells += `<div class="cell ${cls}" data-act="cal-day" data-day="${k}" data-drop-day="${k}" role="button" tabindex="0" aria-label="${longDate(d)}${tip ? ', ' + esc(tip) : ''}, ${items.length} Aufgaben"${tip ? ` title="${esc(tip)}"` : ''}><div class="cell-n">${d.getDate()}</div>${hol ? `<div class="hol-name">${esc(hol)}</div>` : ''}${lvs.map(lchip).join('')}${items.slice(0, max).map(chip).join('')}${items.length > max ? `<div class="more">+${items.length - max} weitere</div>` : ''}<div class="dots">${[...lvs.map(e => LT[e.type].c), ...items.map(chipColor)].slice(0, 4).map(col => `<i style="--c:${col}"></i>`).join('')}</div></div>`;
+        const bds = bdOn(k);
+        const tip = [hol, fer, ...bds.map(b => bdText(b, k)), ...lvs.map(e => LT[e.type].cal)].filter(Boolean).join(' · ');
+        const max = Math.max(1, 3 - lvs.length - bds.length);
+        cells += `<div class="cell ${cls}" data-act="cal-day" data-day="${k}" data-drop-day="${k}" role="button" tabindex="0" aria-label="${longDate(d)}${tip ? ', ' + esc(tip) : ''}, ${items.length} Aufgaben"${tip ? ` title="${esc(tip)}"` : ''}><div class="cell-n">${d.getDate()}</div>${hol ? `<div class="hol-name">${esc(hol)}</div>` : ''}${bds.map(b => bchip(b, k)).join('')}${lvs.map(lchip).join('')}${items.slice(0, max).map(chip).join('')}${items.length > max ? `<div class="more">+${items.length - max} weitere</div>` : ''}<div class="dots">${[...bds.map(() => BD_C), ...lvs.map(e => LT[e.type].c), ...items.map(chipColor)].slice(0, 4).map(col => `<i style="--c:${col}"></i>`).join('')}</div></div>`;
       }
     }
     grid = `<div class="cal-grid">${cells}</div>`;
@@ -2387,7 +2412,7 @@ function renderCalendar() {
     const lv = leaveByDay(dkey(start), dkey(end));
     title = `KW ${isoWeek(start)} <span>${start.getDate()}. ${start.getMonth() !== end.getMonth() ? MONS[start.getMonth()] + ' ' : ''}– ${shortDate(end)}</span>`;
     if (c.mode === 'plan') grid = planGrid(start, by, lv);
-    else grid = `<div class="week-grid">${[0, 1, 2, 3, 4, 5, 6].map(i => { const d = addDays(start, i); const k = dkey(d); const items = by.get(k) || []; const hol = holidayOf(k), fer = ferienOf(k); const lvs = lv.get(k) || []; return `<div class="wcol ${k === td ? 'today' : ''} ${dayClass(d)} ${fer ? 'fer' : ''}" data-drop-day="${k}"><div class="whead" data-act="cal-day" data-day="${k}" role="button" tabindex="0"><b>${d.getDate()}</b><span>${WDS[d.getDay()]}</span></div>${hol ? `<div class="hol-name">${esc(hol)}</div>` : ''}${fer ? `<div class="fer-name">${esc(fer)}</div>` : ''}${lvs.map(lchip).join('')}${items.map(chip).join('')}${items.length || lvs.length ? '' : '<div class="wempty">Keine Aufgaben</div>'}</div>`; }).join('')}</div>`;
+    else grid = `<div class="week-grid">${[0, 1, 2, 3, 4, 5, 6].map(i => { const d = addDays(start, i); const k = dkey(d); const items = by.get(k) || []; const hol = holidayOf(k), fer = ferienOf(k); const lvs = lv.get(k) || []; return `<div class="wcol ${k === td ? 'today' : ''} ${dayClass(d)} ${fer ? 'fer' : ''}" data-drop-day="${k}"><div class="whead" data-act="cal-day" data-day="${k}" role="button" tabindex="0"><b>${d.getDate()}</b><span>${WDS[d.getDay()]}</span></div>${hol ? `<div class="hol-name">${esc(hol)}</div>` : ''}${fer ? `<div class="fer-name">${esc(fer)}</div>` : ''}${bdOn(k).map(b => bchip(b, k)).join('')}${lvs.map(lchip).join('')}${items.map(chip).join('')}${items.length || lvs.length || bdOn(k).length ? '' : '<div class="wempty">Keine Aufgaben</div>'}</div>`; }).join('')}</div>`;
   }
   const html = `<div class="cal-bar">${menuBtn()}<h1>${title}</h1>
       <div class="seg" role="group" aria-label="Ansicht"><button data-act="cal-mode" data-v="month" aria-pressed="${c.mode === 'month'}">Monat</button><button data-act="cal-mode" data-v="week" aria-pressed="${c.mode === 'week'}">Woche</button><button data-act="cal-mode" data-v="plan" aria-pressed="${c.mode === 'plan'}">Planer</button></div>
@@ -2560,7 +2585,7 @@ async function installUpdate() {
 }
 
 /* ---------- Übersicht ---------- */
-const MORE_VIEWS = ['matrix', 'habits', 'leave'];
+const MORE_VIEWS = [];
 /* ---------- Personen (Zuständigkeiten) ----------
    Liste in den App-Einstellungen: people = [{id, name, short, color}]; Aufgaben tragen people = [ids]. */
 const people = () => (appSet().people || []).filter(p => p && p.id && p.name);
@@ -2621,10 +2646,8 @@ function assignDialog(mode = 'all') {
     };
   }, 'rich');
 }
-function personFilter(pid) {
-  const p = personOf(pid); const q = p ? '@' + p.short : '@ohne';
-  const sf = $('#search'); if (sf) sf.value = q; S.search = q; if (S.view !== 'tasks') setView('tasks'); else render();
-}
+function personFilter(pid) { const p = personOf(pid); searchFor(p ? '@' + p.short : '@ohne'); }
+function searchFor(q) { const sf = $('#search'); if (sf) sf.value = q; S.search = q; if (S.view !== 'tasks') setView('tasks'); else render(); }
 const SYNC_SHORT = {connecting: 'gleicht ab', synced: 'synchron', offline: 'offline', setup: 'nicht eingerichtet', error: 'gestört'};
 function greeting() {
   const h = new Date().getHours(); const g = h < 5 ? 'Gute Nacht' : h < 11 ? 'Guten Morgen' : h < 18 ? 'Guten Tag' : 'Guten Abend';
@@ -2681,7 +2704,7 @@ function renderHome() {
   const evRow = t => `<div class="hm-task ev" role="button" tabindex="0" data-act="open-task" data-id="${t.id}"><span class="chk ev" title="Termin">${ic('cal')}</span><div class="tt"><b>${t.title ? esc(t.title) : 'Ohne Titel'}</b><small>${isRange(t) ? esc(whenLabel(t)) : t.time ? esc(t.time) + ' · Termin' : 'Termin · ganztägig'}</small>${noteHtml(t)}</div>${ppBadges(t)}<span class="rt">${firstDay(t) === td && t.time ? esc(t.time) : isRange(t) ? 'bis ' + dm(t.due) : 'ganztägig'}</span></div>`;
   const rows = [...open.slice(0, 10), ...done.slice(-3)];
   const more = open.length > 10 ? `<p class="hm-none">+${open.length - 10} weitere</p>` : '';
-  const heute = `<section class="hm-card heute"><header><h2>Heute</h2><button class="hm-link" data-act="sel" data-type="smart" data-id="today">Alle anzeigen</button></header>${evToday.map(evRow).join('')}${rows.length ? rows.map(homeTask).join('') + more : evToday.length ? '' : '<p class="hm-none">Für heute ist nichts geplant. Leg oben etwas an oder genieße den freien Tag.</p>'}</section>`;
+  const heute = `<section class="hm-card heute"><header><h2>Heute</h2><button class="hm-link" data-act="sel" data-type="smart" data-id="today">Alle anzeigen</button></header>${bdOn(td).map(b => `<button class="hm-bd" data-act="bd-manage">${ic('cake')}<span>${esc(bdText(b, td))}</span></button>`).join('')}${evToday.map(evRow).join('')}${rows.length ? rows.map(homeTask).join('') + more : evToday.length || bdOn(td).length ? '' : '<p class="hm-none">Für heute ist nichts geplant. Leg oben etwas an oder genieße den freien Tag.</p>'}</section>`;
 
   // Diese Woche: groß als sieben Spalten, auf dem Handy als Leiste mit Liste
   const ws = startOfWeek(now), by = tasksByDay(), wEnd = dkey(addDays(ws, 6)), lv = leaveByDay(dkey(ws), wEnd);
@@ -2689,17 +2712,18 @@ function renderHome() {
   const wkItem = t => `<div class="wk-it ${isEvent(t) ? 'ev' : ''} ${t.done ? 'done' : ''}" style="--c:${chipColor(t)}" data-act="open-task" data-id="${t.id}" ${t.done || t._cont ? '' : `data-drag-task="${t.id}"`} title="${esc((t.title || '') + (isRange(t) ? ' · ' + whenLabel(t) : ''))}">${t.time ? `<em>${esc(t.time)}</em>` : ''}<span>${t.title ? esc(t.title) : 'Ohne Titel'}</span>${ppBadges(t)}</div>`;
   const cols = days.map(d => {
     const k = dkey(d), hol = holidayOf(k), lvs = lv.get(k) || [], items = by.get(k) || [], MAX = 6;
-    return `<div class="wk-col ${k === td ? 'today' : ''} ${k < td ? 'past' : ''} ${dayClass(d)}" data-drop-day="${k}"><button class="wk-h" data-act="home-day" data-day="${k}" title="${esc(longDate(d))} im Kalender öffnen"><small>${WDS[d.getDay()]}</small><b>${d.getDate()}</b></button><div class="wk-items">${hol ? `<div class="wk-hol">${esc(hol)}</div>` : ''}${lvs.map(lchip).join('')}${items.slice(0, MAX).map(wkItem).join('')}${items.length > MAX ? `<button class="wk-more" data-act="home-day" data-day="${k}">+${items.length - MAX} weitere</button>` : ''}</div></div>`;
+    return `<div class="wk-col ${k === td ? 'today' : ''} ${k < td ? 'past' : ''} ${dayClass(d)}" data-drop-day="${k}"><button class="wk-h" data-act="home-day" data-day="${k}" title="${esc(longDate(d))} im Kalender öffnen"><small>${WDS[d.getDay()]}</small><b>${d.getDate()}</b></button><div class="wk-items">${hol ? `<div class="wk-hol">${esc(hol)}</div>` : ''}${bdOn(k).map(b => bchip(b, k)).join('')}${lvs.map(lchip).join('')}${items.slice(0, MAX).map(wkItem).join('')}${items.length > MAX ? `<button class="wk-more" data-act="home-day" data-day="${k}">+${items.length - MAX} weitere</button>` : ''}</div></div>`;
   }).join('');
   const strip = days.map(d => {
     const k = dkey(d), hol = holidayOf(k);
-    const dots = [...(lv.get(k) || []).slice(0, 1).map(e => LT[e.type].c), ...(by.get(k) || []).filter(t => !t.done).map(chipColor)].slice(0, 3);
+    const dots = [...bdOn(k).slice(0, 1).map(() => BD_C), ...(lv.get(k) || []).slice(0, 1).map(e => LT[e.type].c), ...(by.get(k) || []).filter(t => !t.done).map(chipColor)].slice(0, 3);
     return `<button class="hm-day ${k === td ? 'today' : ''} ${dayClass(d)}" data-act="home-day" data-day="${k}" title="${esc(longDate(d) + (hol ? ' · ' + hol : ''))}"><small>${WDS[d.getDay()]}</small><b>${d.getDate()}</b><span class="hm-dots">${dots.map(c => `<i style="--c:${c}"></i>`).join('')}</span></button>`;
   }).join('');
   const wrows = [];
   for (const d of days) {
     const k = dkey(d); if (k < td) continue; const wd = WDS[d.getDay()];
     const hol = holidayOf(k); if (hol) wrows.push(`<div class="hm-wrow hol"><small>${wd}</small><span>${esc(hol)}</span></div>`);
+    for (const b of bdOn(k)) wrows.push(`<button class="hm-wrow bd" data-act="bd-manage"><small>${wd}</small><span>${ic('cake')}${esc(bdLabel(b, k))}</span></button>`);
     for (const e of (lv.get(k) || [])) if (e.from === k || k === td) wrows.push(`<button class="hm-wrow" data-act="lv-edit" data-id="${e.id}"><small>${wd}</small><span>${esc(e.title || LT[e.type].cal || LT[e.type].name)}</span></button>`);
     for (const t of (by.get(k) || []).filter(t => !t.done && (!t._cont || k === td))) wrows.push(`<button class="hm-wrow" data-act="open-task" data-id="${t.id}"><small>${wd}</small><span>${t.title ? esc(t.title) : 'Ohne Titel'}${t.time ? ' · ' + esc(t.time) : ''}${isRange(t) ? ' · bis ' + dm(t.due) : ''} ${ppBadges(t)}</span></button>`);
   }
@@ -2708,8 +2732,8 @@ function renderHome() {
 
   // Prioritäten
   const ot = openTasks(); const qn = p => ot.filter(t => quadOf(t) === p).length;
-  const QL = {3: ['Sofort erledigen', 'Sofort'], 2: ['Einplanen', 'Planen'], 1: ['Delegieren', 'Delegieren'], 4: ['Später', 'Später']};
-  const prio = `<section class="hm-card prio"><header><h2>Prioritäten</h2><button class="hm-link" data-act="view" data-view="matrix">Matrix</button></header><div class="hm-quads">${[3, 2, 1, 4].map(p => `<button class="hm-q q${p}" data-act="view" data-view="matrix"><b>${qn(p)}</b><span class="l">${QL[p][0]}</span><span class="s">${QL[p][1]}</span></button>`).join('')}</div></section>`;
+  const QL = {3: ['Hohe Priorität', 'Hoch', '!1'], 2: ['Mittlere Priorität', 'Mittel', '!2'], 1: ['Niedrige Priorität', 'Niedrig', '!3'], 4: ['Ohne Priorität', 'Ohne', '!0']};
+  const prio = `<section class="hm-card prio"><header><h2>Prioritäten</h2><button class="hm-link" data-act="view" data-view="tasks">Aufgaben</button></header><div class="hm-quads">${[3, 2, 1, 4].map(p => `<button class="hm-q q${p}" data-act="search-for" data-v="${QL[p][2]}"><b>${qn(p)}</b><span class="l">${QL[p][0]}</span><span class="s">${QL[p][1]}</span></button>`).join('')}</div></section>`;
 
   const html = `${stats}<div class="hm-grid">${woche}${heute}${prio}${nextHtml('side-box hm-next')}</div>`;
   if (el.dataset.html === html) return; el.dataset.html = html;
@@ -2860,7 +2884,6 @@ async function settingsDialog() {
       ${prefs ? tgl('tray', prefs.close_to_tray, 'Beim Schließen im Infobereich weiterlaufen', 'Damit Erinnerungen auch bei geschlossenem Fenster kommen') + tgl('autostart', prefs.autostart, 'Mit Windows starten', 'Startet unauffällig im Infobereich') : ''}
       <div class="fld-h"><span>Kalender &amp; Ansicht</span><em>gilt auf allen Geräten</em></div>
       ${tgl('ferien', as.ferien !== false, 'Schulferien Baden-Württemberg anzeigen', 'Termine veröffentlicht bis Sommer 2030')}
-      ${tgl('habitsToday', as.habitsToday !== false, 'Gewohnheiten in „Heute“ zeigen')}
       <div class="fld-h"><span>Personen</span><em>gilt auf allen Geräten</em></div>
       <button class="row-card" data-m="people"><span class="tile">${ic('user')}</span><span style="flex:1;min-width:0"><b>Personen und Kürzel</b><small>${people().length ? esc(people().map(p => p.short + ' ' + p.name).join(', ')) : 'Wer erledigt Aufgaben? Kürzel an jeder Aufgabe'}</small></span>${ic('right')}</button>
       <div class="fld-h"><span>Urlaub &amp; Überstunden</span><em>gilt auf allen Geräten</em></div>
@@ -3174,14 +3197,14 @@ function renderLeave() {
     <div class="vhead">${menuBtn()}<div class="ttl"><h1>Urlaub &amp; Überstunden</h1><div class="sub">Was du bekommen und was du verbraucht hast – ${standIn}</div></div><button class="btn" data-act="lv-export">${ic('download')}<span>Exportieren</span></button></div>
     <div class="lv-cards">
       <section class="lv-card">
-        <header><span class="lv-tile u">${ic('case')}</span><b>Urlaub</b><span class="sp"></span><small>in Tagen</small></header>
+        <header><span class="lv-tile u">${ic('case')}</span><b>Urlaub</b><span class="sp"></span><button class="btn" data-act="lv-new" data-v="u_stand">${ic('edit')}<span>Stand eintragen</span></button></header>
         <div class="lv-big"><b class="u">${fmtDays(u.avail)}</b><span>Tage verfügbar</span><span class="sp"></span><small>nach Planung: ${fmtDays(u.after)}</small></div>
         <div class="lv-bar"><i class="taken" style="width:${pT}%"></i><i class="plan" style="width:${pP}%"></i></div>
         <div class="lv-stats">${uStats.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('')}<div><b>${fmtDays(u.taken)}</b><span><i class="lg taken"></i>genommen</span></div><div><b>${fmtDays(u.planned)}</b><span><i class="lg plan"></i>geplant</span></div></div>
         ${uFoot.map(x => `<div class="lv-foot">${x}</div>`).join('')}${hints.join('')}
       </section>
       <section class="lv-card">
-        <header><span class="lv-tile h">${ic('clock')}</span><b>Überstunden</b><span class="sp"></span><small>in Stunden</small></header>
+        <header><span class="lv-tile h">${ic('clock')}</span><b>Überstunden</b><span class="sp"></span><button class="btn" data-act="lv-new" data-v="ue_stand">${ic('edit')}<span>Stand eintragen</span></button></header>
         <div class="lv-big"><b class="h">${signed(o.saldo, fmtH) || '0,0'}</b><span>Std. ${o.saldo < 0 ? 'im Minus' : 'Guthaben'}</span><span class="sp"></span><small>≈ ${fmtNum(o.saldo / hoursPerDay(), 1)} Diensttage${o.all !== o.saldo ? ` · nach Planung: ${fmtH(o.all)} h` : ''}</small></div>
         <div class="lv-chart">${bars}</div>
         <div class="lv-stats three"><div><b class="pos">${signed(o.plus, fmtH) || '0,0'}</b><span>aufgebaut ${Y}</span></div><div><b class="neg">${o.minus ? '−' + fmtH(o.minus) : '0,0'}</b><span>abgebaut ${Y}</span></div><div><b>${o.count}</b><span>Buchungen</span></div></div>
@@ -3412,7 +3435,7 @@ function compileFilter(q) {
   for (const w of src.split(/\s+/).filter(Boolean)) {
     if (w.length > 1 && w[0] === '@') { const n = w.slice(1); if (n === 'ohne' || n === 'niemand') tests.push(t => !taskPeople(t).length); else { const p = findPerson(n); tests.push(t => !!p && (t.people || []).includes(p.id)); } }
     else if (w.length > 1 && w[0] === '#') tests.push(t => (t.tags || []).some(g => g.toLowerCase() === w.slice(1)));
-    else if (/^!(1|2|3)$/.test(w)) { const p = {1: 3, 2: 2, 3: 1}[w[1]]; tests.push(t => (t.priority || 0) === p); }
+    else if (/^!(0|1|2|3)$/.test(w)) { const p = {0: 0, 1: 3, 2: 2, 3: 1}[w[1]]; tests.push(t => (t.priority || 0) === p); }
     else if (w.length > 1 && w[0] === '^') tests.push(t => { const l = listOf(t); return w === '^eingang' ? !l : !!l && l.name.toLowerCase().replace(/\s+/g, '').startsWith(w.slice(1)); });
     else if (w === 'überfällig' || w === 'ueberfaellig') tests.push(t => t.due && t.due < td);
     else if (w === 'heute') tests.push(t => t.due && t.due <= td);
@@ -3473,6 +3496,77 @@ function useTemplate(id) {
   const t = newTask(f); save('tasks', t); openTask(t.id); toast(`Aus Vorlage „${tp.name}“ angelegt`);
 }
 
+/* ---------- Geburtstage ----------
+   Sammlung "birthdays": {id, name, date:'MM-TT', year|null}. Erscheinen jedes Jahr im Kalender und in der Übersicht. */
+const BD_C = '#FF8A5B';
+const bdAll = () => [...S.birthdays.values()].filter(b => b && b.name && /^\d{2}-\d{2}$/.test(b.date || ''));
+const isLeap = y => (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;
+const bdKey = (b, y) => `${y}-${b.date === '02-29' && !isLeap(y) ? '02-28' : b.date}`;
+function bdOn(k) { const y = +k.slice(0, 4); return bdAll().filter(b => bdKey(b, y) === k).sort((a, b) => a.name.localeCompare(b.name, 'de')); }
+const bdAge = (b, k) => b.year ? +k.slice(0, 4) - b.year : null;
+const bdLabel = (b, k) => { const a = bdAge(b, k); return a != null && a > 0 ? `${b.name} (${a})` : b.name; };
+const bdText = (b, k) => { const a = bdAge(b, k); return `${b.name} hat Geburtstag${a != null && a > 0 ? ` – wird ${a}` : ''}`; };
+const bchip = (b, k) => `<div class="bchip" data-act="bd-manage" title="${esc(bdText(b, k))}">${ic('cake')}<span>${esc(bdLabel(b, k))}</span></div>`;
+function bdNext(n = 5) {
+  const td = todayKey(), y = +td.slice(0, 4);
+  return bdAll().map(b => { let k = bdKey(b, y); if (k < td) k = bdKey(b, y + 1); return {b, k, in: diffDays(k, td)}; }).sort((a, c) => a.in - c.in || a.b.name.localeCompare(c.b.name, 'de')).slice(0, n);
+}
+const bdDate = b => `${b.date.slice(3)}.${b.date.slice(0, 2)}.${b.year || ''}`;
+function sideBirthdays() {
+  const nx = bdNext(5);
+  return `<div class="side-label"><span>Geburtstage</span><button class="hm-link" data-act="bd-manage">${nx.length ? 'Verwalten' : 'Eintragen'}</button></div>${nx.length ? `<div class="bd-side">${nx.map(({b, k, in: d}) => `<button data-act="bd-manage"><span class="bd-ic">${ic('cake')}</span><span class="bd-n">${esc(bdLabel(b, k))}</span><em>${d === 0 ? 'heute' : d === 1 ? 'morgen' : `${dm(k)} · in ${d} T.`}</em></button>`).join('')}</div>` : '<p class="hint">Noch keine Geburtstage eingetragen.</p>'}`;
+}
+// Eine Zeile wie „Max Mustermann 12.03.1985“, „Oma: 3.7.“ oder „12.03.85 Anna“
+function bdParse(line) {
+  const m = line.match(/(\d{1,2})\.\s*(\d{1,2})\.?\s*(\d{2,4})?/); if (!m) return null;
+  const d = +m[1], mo = +m[2]; let y = m[3] ? +m[3] : null;
+  if (y != null && y < 100) y += y > (new Date().getFullYear() % 100) ? 1900 : 2000;
+  if (mo < 1 || mo > 12 || d < 1 || d > [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][mo - 1]) return null;
+  if (y != null && (y < 1900 || y > new Date().getFullYear())) return null;
+  const name = (line.slice(0, m.index) + ' ' + line.slice(m.index + m[0].length)).replace(/[:;,–—|\t]+/g, ' ').replace(/(^|\s)-(\s|$)/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!name) return null;
+  return {name: name.slice(0, 60), date: `${pad(mo)}-${pad(d)}`, year: y};
+}
+function birthdaysDialog() {
+  const body = () => {
+    const td = todayKey(), y = +td.slice(0, 4);
+    const all = bdAll().map(b => { let k = bdKey(b, y); if (k < td) k = bdKey(b, y + 1); return {b, k}; }).sort((a, c) => a.k.localeCompare(c.k) || a.b.name.localeCompare(c.b.name, 'de'));
+    return `<div class="bd-add"><input id="bd-name" type="text" maxlength="60" placeholder="Name" autocomplete="off"><input id="bd-date" type="text" maxlength="10" placeholder="TT.MM.JJJJ" inputmode="decimal" autocomplete="off"><button type="button" class="btn primary" data-m="add">${ic('plus')}<span>Hinzufügen</span></button></div>
+      <p class="hint">Das Jahr ist freiwillig – mit Jahr steht das Alter im Kalender.</p>
+      <div class="bd-list">${all.length ? all.map(({b, k}) => { const d = diffDays(k, td); return `<div class="bd-row"><span class="bd-ic">${ic('cake')}</span><div><b>${esc(b.name)}</b><small>${bdDate(b)}${d === 0 ? ' · heute' : d === 1 ? ' · morgen' : ` · in ${d} Tagen`}${bdAge(b, k) > 0 ? ` · wird ${bdAge(b, k)}` : ''}</small></div><button type="button" class="icon-btn" data-m="del" data-id="${b.id}" aria-label="${esc(b.name)} löschen">${ic('trash')}</button></div>`; }).join('') : '<p class="hint" style="margin:0">Noch keine Geburtstage eingetragen.</p>'}</div>
+      <details class="bd-import" ${all.length ? '' : 'open'}><summary>Ganze Liste einfügen</summary><textarea id="bd-text" rows="6" placeholder="Eine Zeile pro Person, z. B.&#10;Max Mustermann 12.03.1985&#10;Oma: 3.7.&#10;Anna Müller – 24.12.90"></textarea><button type="button" class="btn" data-m="import">${ic('upload')}Liste übernehmen</button></details>`;
+  };
+  openModal(`<div class="m-head"><h3>Geburtstage</h3><button class="icon-btn" type="button" data-m="no" aria-label="Schließen">${ic('x')}</button></div><div class="m-body" id="bdBody">${body()}</div><div class="m-foot"><span class="sp"></span><button type="button" class="btn primary" data-m="no">Fertig</button></div>`, back => {
+    const redraw = () => { $('#bdBody', back).innerHTML = body(); };
+    const exists = p => bdAll().some(b => b.name.toLowerCase() === p.name.toLowerCase() && b.date === p.date);
+    const add = () => {
+      const n = $('#bd-name', back).value.trim(), dt = $('#bd-date', back).value.trim();
+      const p = bdParse(`${n} ${dt}`);
+      if (!n) { toast('Bitte einen Namen eingeben'); $('#bd-name', back).focus(); return; }
+      if (!p) { toast('Datum bitte als TT.MM. oder TT.MM.JJJJ'); $('#bd-date', back).focus(); return; }
+      if (exists(p)) { toast('Ist schon eingetragen'); return; }
+      save('birthdays', {id: uid(), createdAt: Date.now(), ...p}); redraw(); toast(`${p.name} eingetragen`);
+      setTimeout(() => { const f = $('#bd-name', back); if (f) f.focus(); }, 30);
+    };
+    back.onkeydown = e => { if (e.key === 'Enter' && (e.target.id === 'bd-name' || e.target.id === 'bd-date')) { e.preventDefault(); if (e.target.id === 'bd-name') $('#bd-date', back).focus(); else add(); } };
+    back.onclick = e => {
+      if (e.target === back) return closeModal();
+      const b = e.target.closest('[data-m]'); if (!b) return; const m = b.dataset.m;
+      if (m === 'no') closeModal();
+      if (m === 'add') add();
+      if (m === 'del') { const x = S.birthdays.get(b.dataset.id); if (x) { removeDoc('birthdays', x.id); redraw(); toast(`${x.name} gelöscht`); } }
+      if (m === 'import') {
+        const lines = $('#bd-text', back).value.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+        let ok = 0, dup = 0; const bad = [];
+        for (const l of lines) { const p = bdParse(l); if (!p) { bad.push(l); continue; } if (exists(p)) { dup++; continue; } save('birthdays', {id: uid(), createdAt: Date.now(), ...p}); ok++; }
+        redraw();
+        if (bad.length) { const t = $('#bd-text', back); t.value = bad.join('\n'); t.closest('details').open = true; }
+        toast(`${ok} ${ok === 1 ? 'Geburtstag' : 'Geburtstage'} übernommen${dup ? `, ${dup} schon vorhanden` : ''}${bad.length ? ` – ${bad.length} ${bad.length === 1 ? 'Zeile' : 'Zeilen'} nicht verstanden (stehen noch im Feld)` : ''}`);
+      }
+    };
+  }, 'rich');
+}
+
 /* ---------- Statistik ---------- */
 function statsHtml() {
   const td = todayKey(); const all = liveTasks(); const doneOn = new Map();
@@ -3489,9 +3583,9 @@ function statsHtml() {
   const fWeek = [...Array(7)].reduce((s, _, i) => s + ((S.focus.get(dkey(addDays(ws, i))) || {}).minutes || 0), 0);
   const trend = week === prev ? 'genauso viele wie' : week > prev ? `${week - prev} mehr als` : `${prev - week} weniger als`;
   return `<div class="f-stats st4"><div class="stat"><b>${doneOn.get(td) || 0}</b><span>heute erledigt</span></div><div class="stat"><b>${week}</b><span>diese Woche erledigt</span></div><div class="stat"><b>${open.length}</b><span>offen</span></div><div class="stat"><b class="${late ? 'neg' : ''}">${late}</b><span>überfällig</span></div></div>
-    <div class="qcard st-card"><div class="qcard-h"><b>Wochenrückblick</b><span>KW ${isoWeek(new Date())}</span></div><p>Diese Woche hast du <b>${week}</b> ${week === 1 ? 'Aufgabe' : 'Aufgaben'} erledigt – ${trend} letzte Woche. Fokuszeit: <b>${fWeek} Minuten</b>.${sortedHabits().length ? ` Gewohnheiten siehe unten.` : ''}</p></div>
+    <div class="qcard st-card"><div class="qcard-h"><b>Wochenrückblick</b><span>KW ${isoWeek(new Date())}</span></div><p>Diese Woche hast du <b>${week}</b> ${week === 1 ? 'Aufgabe' : 'Aufgaben'} erledigt – ${trend} letzte Woche.</p></div>
     <div class="bars st-bars"><div class="bars-h"><b>Erledigt in den letzten 14 Tagen</b><span>Aufgaben</span></div><div class="bars-row">${days.map((k, i) => `<div class="bar ${k === td ? 'today' : ''}"><span>${vals[i] || ''}</span><i style="height:${Math.max(2, Math.round(vals[i] / max * 88))}%"></i></div>`).join('')}</div><div class="bars-x">${days.map(k => `<span class="${k === td ? 'today' : ''}">${parseKey(k).getDate()}.</span>`).join('')}</div></div>
-    <div class="st-grid"><div class="qcard st-card"><div class="qcard-h"><b>Fokuszeit nach Liste</b><span>30 Tage · ${fsum} min</span></div>${flRows || '<p class="hint">Noch keine Fokus-Einheiten.</p>'}</div>
+    <!--st--><div class="st-grid" hidden><div class="qcard st-card"><div class="qcard-h"><b>Fokuszeit nach Liste</b><span>30 Tage · ${fsum} min</span></div>${flRows || '<p class="hint">Noch keine Fokus-Einheiten.</p>'}</div>
     <div class="qcard st-card"><div class="qcard-h"><b>Gewohnheiten</b><span>Zielerreichung 4 Wochen</span></div>${hs || '<p class="hint">Noch keine Gewohnheiten.</p>'}</div></div>`;
 }
 
@@ -3804,7 +3898,7 @@ function updateWidget() {
 
 /* ---------- Tastenkürzel-Hilfe ---------- */
 function shortcutsDialog() {
-  const rows = [['n', 'Neue Aufgabe'], ['/', 'Suchen'], ['↑ ↓', 'Durch Aufgaben gehen'], ['Leertaste', 'Markierte Aufgabe abhaken'], ['Enter', 'Details öffnen'], ['t / m', 'Auf heute / morgen legen'], ['Entf', 'In den Papierkorb'], ['Strg+Z', 'Rückgängig'], ['1 – 7', 'Bereiche wechseln'], ['Esc', 'Schließen'], ['?', 'Diese Hilfe']];
+  const rows = [['n', 'Neue Aufgabe'], ['/', 'Suchen'], ['↑ ↓', 'Durch Aufgaben gehen'], ['Leertaste', 'Markierte Aufgabe abhaken'], ['Enter', 'Details öffnen'], ['t / m', 'Auf heute / morgen legen'], ['Entf', 'In den Papierkorb'], ['Strg+Z', 'Rückgängig'], ['1 – 4', 'Bereiche wechseln'], ['Esc', 'Schließen'], ['?', 'Diese Hilfe']];
   openModal(`<h3>Tastenkürzel</h3><div class="keys">${rows.map(([k, v]) => `<div><kbd>${k}</kbd><span>${v}</span></div>`).join('')}</div><div class="m-actions"><span class="sp"></span><button class="btn primary" data-m="no">Schließen</button></div>`, back => { back.onclick = e => { if (e.target === back || e.target.closest('[data-m]')) closeModal(); }; });
 }
 function openUrl(url) {
@@ -3821,6 +3915,8 @@ document.addEventListener('click', e => {
   const a = el.dataset.act, id = el.dataset.id, v = el.dataset.v;
   switch (a) {
     case 'view': setView(el.dataset.view); break;
+    case 'search-for': searchFor(v); break;
+    case 'bd-manage': birthdaysDialog(); break;
     case 'sel': select(el.dataset.type, el.dataset.id); break;
     case 'open-task': openTask(id); break;
     case 'toggle-task': toggleTask(id); break;
@@ -3976,7 +4072,7 @@ document.addEventListener('keydown', e => {
   const cur = (t.matches && t.matches('.task[data-id]')) ? t.dataset.id : S.taskId;
   if (e.key === 'Delete' && cur) { e.preventDefault(); trashTask(cur); return; }
   if ((e.key === 't' || e.key === 'm') && cur) { e.preventDefault(); const k = e.key === 't' ? todayKey() : dkey(addDays(new Date(), 1)); const prev = (S.tasks.get(cur) || {}).due; editTask(cur, x => { x.due = k; }); toast(e.key === 't' ? 'Auf heute gelegt' : 'Auf morgen gelegt', () => editTask(cur, x => { x.due = prev || null; })); return; }
-  if (/^[1-7]$/.test(e.key)) { e.preventDefault(); setView(VIEWS[+e.key - 1].id); return; }
+  if (/^[1-9]$/.test(e.key) && VIEWS[+e.key - 1]) { e.preventDefault(); setView(VIEWS[+e.key - 1].id); return; }
   if (e.key === '?') { e.preventDefault(); shortcutsDialog(); return; }
   if (e.key === 'n' || e.key === 'q') { e.preventDefault(); if (S.view !== 'tasks') setView('tasks'); setTimeout(() => $('#qa-main')?.focus(), 30); }
   if (e.key === '/') { e.preventDefault(); if (S.view !== 'tasks') setView('tasks'); document.body.classList.add('side-open'); setTimeout(() => $('#search')?.focus(), 60); }
