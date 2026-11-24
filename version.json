@@ -1,5 +1,5 @@
 {
-  "version": "1.12.2",
+  "version": "1.12.3",
   "date": "2026-11-24",
-  "notes": "Urlaub & Überstunden zeigt nur noch die Übersicht. Die Buchungen öffnest du links über „Buchungen ansehen“."
+  "notes": "Übersicht aufgeräumt: „Aufgaben heute“ und „Prioritäten“ sind weg, „Heute“ steht neben der Woche – alles auf einen Blick ohne Scrollen."
 }

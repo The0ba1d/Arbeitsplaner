@@ -8,7 +8,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-256.png">
 <link rel="apple-touch-icon" href="icon-256.png">
-<script>window.AP_WEB = {version: "1.12.2"};</script>
+<script>window.AP_WEB = {version: "1.12.3"};</script>
 <title>Arbeitsplaner</title>
 <style>
 @font-face{font-family:"Inter";src:url("fonts/inter.woff2") format("woff2");font-weight:100 900;font-display:swap}
@@ -248,7 +248,7 @@ h1,h2,h3{font-family:var(--font-head);margin:0;letter-spacing:-.02em;text-wrap:b
 .wk-col.we .wk-h b{color:var(--fg-2)} .wk-col.hol .wk-h b{color:var(--p-high)}
 .wk-col.today .wk-h b,.wk-col.today .wk-h small{color:var(--accent-text)}
 .wk-items{display:flex;flex-direction:column;gap:4px;padding:0 7px 10px;min-width:0}
-.wk-it{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:break-word;hyphens:auto;padding:5px 8px;border-radius:8px;font-size:12.5px;line-height:1.3;cursor:pointer;background:color-mix(in srgb, var(--c) 15%, var(--card));min-width:0}
+.wk-it{display:block;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;padding:5px 8px;border-radius:8px;font-size:12.5px;line-height:1.3;cursor:pointer;background:color-mix(in srgb, var(--c) 15%, var(--card));min-width:0}
 .wk-it:hover{background:color-mix(in srgb, var(--c) 26%, var(--card))}
 .wk-it.ev{box-shadow:inset 3px 0 0 var(--c);font-weight:600}
 .wk-it.done{opacity:.5} .wk-it.done span{text-decoration:line-through}
@@ -603,23 +603,26 @@ body.detail-big .d-head{padding:16px 18px 14px 28px}
 .hm-head h1{font-size:40px;font-weight:700;line-height:1.1;margin-top:4px}
 .hm-qa{flex:0 1 720px;min-width:0}
 .hm-qa .qa-opts{margin-bottom:8px}
-.hm-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:14px}
-.hm-stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 20px;text-align:left;display:flex;flex-direction:column;gap:6px;min-width:0;transition:border-color .12s,background .12s}
+.hm-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:14px}
+.hm-stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 20px;text-align:left;display:flex;flex-direction:column;gap:6px;min-width:0;transition:border-color .12s,background .12s}
 .hm-stat:hover{border-color:var(--line-2);background:var(--card-2)}
 .hm-stat .lab{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--fg-2)}
 .hm-stat .lab .i{width:17px;height:17px;color:var(--accent-text)}
 .hm-stat .lab .i.ue{color:var(--ue)}
 .hm-stat .hs{display:none}
 .hm-stat .val{display:flex;align-items:baseline;gap:7px;font-variant-numeric:tabular-nums;white-space:nowrap}
-.hm-stat .val b{font-family:var(--font-head);font-size:34px;font-weight:700;line-height:1.15;letter-spacing:-.02em}
+.hm-stat .val b{font-family:var(--font-head);font-size:30px;font-weight:700;line-height:1.15;letter-spacing:-.02em}
 .hm-stat .val span{color:var(--fg-2);font-size:15px}
 .hm-stat .val b.u{color:var(--accent-text)} .hm-stat .val b.h{color:var(--ue)} .hm-stat .val b.neg{color:var(--neg)}
 .hm-stat .hs-sub{font-size:13px;color:var(--fg-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hm-prog{height:5px;border-radius:3px;background:var(--card-2);overflow:hidden;margin-top:8px}
 .hm-prog i{display:block;height:100%;background:var(--accent);border-radius:3px}
-.hm-grid{display:grid;gap:14px;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-areas:"woche woche woche woche woche woche woche woche woche woche woche woche" "heute heute heute heute heute heute heute prio prio prio prio prio"}
+.hm-grid{display:grid;gap:14px;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-areas:"woche woche woche woche woche woche woche woche heute heute heute heute"}
+/* Heute wächst nicht über die Woche hinaus, sondern scrollt bei Bedarf in sich */
+.hm-card.heute{height:0;min-height:100%;overflow-y:auto}
+.hm-card.heute > header{position:sticky;top:0;z-index:1;background:var(--card);border-radius:18px 18px 0 0}
 .hm-card{background:var(--card);border:1px solid var(--line);border-radius:18px;min-width:0;display:flex;flex-direction:column}
-.hm-card.heute{grid-area:heute;align-self:start} .hm-card.pers{grid-area:pers} .hm-card.woche{grid-area:woche} .hm-card.prio{grid-area:prio} .hm-card.fokus{grid-area:fokus} .hm-card.hab{grid-area:hab} .hm-next{grid-area:next}
+.hm-card.heute{grid-area:heute} .hm-card.pers{grid-area:pers} .hm-card.woche{grid-area:woche} .hm-card.prio{grid-area:prio} .hm-card.fokus{grid-area:fokus} .hm-card.hab{grid-area:hab} .hm-next{grid-area:next}
 .hm-card > header{display:flex;align-items:center;gap:10px;padding:18px 20px 14px}
 .hm-card > header h2{font-size:17px;font-weight:700;flex:1;min-width:0}
 .hm-link{color:var(--accent-text);font-weight:600;font-size:14px;white-space:nowrap}
@@ -690,7 +693,8 @@ button.hm-wrow:hover span{color:var(--accent-text)}
 .nx-item:hover b{color:var(--accent-text)}
 .nx p{margin:0;font-size:13.5px;color:var(--fg-2)}
 @container (max-width:979px){
-  .hm-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"woche woche" "heute heute" "prio prio" "next next"}
+  .hm-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"heute heute" "woche woche" "next next"}
+  .hm-card.heute{height:auto;min-height:0;overflow:visible}
   .wk-col{min-height:160px}
   .wk-it em{display:none}
   .hm-week{display:none}
@@ -703,8 +707,8 @@ button.hm-wrow:hover span{color:var(--accent-text)}
   .hm-stat{padding:14px 16px;gap:4px}
   .hm-stat .lab .i,.hm-stat .hs-sub,.hm-stat .hl{display:none} .hm-stat .hs{display:inline}
   .hm-stat .val b{font-size:28px}
-  .hm-stats{grid-template-columns:repeat(2,minmax(0,1fr))} .hm-stat:first-child{grid-column:1 / -1}
-  .hm-grid{gap:12px;grid-template-columns:minmax(0,1fr);grid-template-areas:"heute" "woche" "prio" "next"}
+  .hm-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hm-grid{gap:12px;grid-template-columns:minmax(0,1fr);grid-template-areas:"heute" "woche" "next"}
   .wk-grid{display:none} .wk-compact{display:block} .wk-compact .hm-week{display:flex}
   .hm-people{padding:0 16px 16px;grid-template-columns:1fr}
   .hm-task{padding:11px 16px}
@@ -2707,7 +2711,6 @@ function renderHome() {
   const u = leaveStats(Y), o = overtimeStats(Y), hasLeave = u.has;
   const stat = (view, icon, label, val, sub, extra = '') => `<button class="hm-stat" data-act="view" data-view="${view}"><span class="lab">${icon}${Array.isArray(label) ? `<span class="hl">${label[0]}</span><span class="hs">${label[1]}</span>` : label}</span><span class="val">${val}</span>${sub ? `<span class="hs-sub">${sub}</span>` : ''}${extra}</button>`;
   const stats = `<div class="hm-stats">
-    ${stat('tasks', ic('done'), 'Aufgaben heute', `<b>${done.length}</b><span>/ ${total} erledigt</span>`, '', `<div class="hm-prog"><i style="width:${total ? Math.round(done.length / total * 100) : 0}%"></i></div>`)}
     ${stat('leave', ic('case'), ['Urlaub verfügbar', 'Urlaub'], hasLeave ? `<b class="u">${fmtDays(u.avail)}</b><span>${u.avail === 1 ? 'Tag' : 'Tage'}</span>` : '<b class="u">–</b>', hasLeave ? (u.planned ? `nach Planung: ${fmtDays(u.after)} Tage` : 'nichts geplant') : 'noch nicht eingetragen')}
     ${stat('leave', ic('clock', 'ue'), 'Überstunden', `<b class="${o.saldo < 0 ? 'neg' : 'h'}">${signed(o.saldo, fmtH) || '0,0'}</b><span>Std.</span>`, `≈ ${fmtNum(o.saldo / hoursPerDay(), 1)} Diensttage`)}
   </div>`;
@@ -2724,7 +2727,7 @@ function renderHome() {
   const days = [0, 1, 2, 3, 4, 5, 6].map(i => addDays(ws, i));
   const wkItem = t => `<div class="wk-it ${isEvent(t) ? 'ev' : ''} ${t.done ? 'done' : ''}" style="--c:${chipColor(t)}" data-act="open-task" data-id="${t.id}" ${t.done || t._cont ? '' : `data-drag-task="${t.id}"`} title="${esc((t.title || '') + (isRange(t) ? ' · ' + whenLabel(t) : ''))}">${t.time ? `<em>${esc(t.time)}</em>` : ''}<span>${t.title ? esc(t.title) : 'Ohne Titel'}</span>${ppBadges(t)}</div>`;
   const cols = days.map(d => {
-    const k = dkey(d), hol = holidayOf(k), lvs = lv.get(k) || [], items = by.get(k) || [], MAX = 6;
+    const k = dkey(d), hol = holidayOf(k), lvs = lv.get(k) || [], items = by.get(k) || [], MAX = 5;
     return `<div class="wk-col ${k === td ? 'today' : ''} ${k < td ? 'past' : ''} ${dayClass(d)}" data-drop-day="${k}"><button class="wk-h" data-act="home-day" data-day="${k}" title="${esc(longDate(d))} im Kalender öffnen"><small>${WDS[d.getDay()]}</small><b>${d.getDate()}</b></button><div class="wk-items">${hol ? `<div class="wk-hol">${esc(hol)}</div>` : ''}${bdOn(k).map(b => bchip(b, k)).join('')}${lvs.map(lchip).join('')}${items.slice(0, MAX).map(wkItem).join('')}${items.length > MAX ? `<button class="wk-more" data-act="home-day" data-day="${k}">+${items.length - MAX} weitere</button>` : ''}</div></div>`;
   }).join('');
   const strip = days.map(d => {
@@ -2743,12 +2746,7 @@ function renderHome() {
   const wlist = wrows.length ? wrows.slice(0, 7).join('') + (wrows.length > 7 ? `<button class="hm-wrow" data-act="view" data-view="calendar"><small></small><span class="hm-link">+${wrows.length - 7} weitere im Kalender</span></button>` : '') : '<p class="hm-none">Diese Woche steht nichts mehr an.</p>';
   const woche = `<section class="hm-card woche"><header><h2>Diese Woche</h2><small>KW ${isoWeek(now)} · ${dm(dkey(ws))} – ${dm(wEnd)}</small><button class="hm-link" data-act="view" data-view="calendar">Kalender</button></header><div class="wk-grid">${cols}</div><div class="wk-compact"><div class="hm-days">${strip}</div><div class="hm-week">${wlist}</div></div></section>`;
 
-  // Prioritäten
-  const ot = openTasks(); const qn = p => ot.filter(t => quadOf(t) === p).length;
-  const QL = {3: ['Hohe Priorität', 'Hoch', '!1'], 2: ['Mittlere Priorität', 'Mittel', '!2'], 1: ['Niedrige Priorität', 'Niedrig', '!3'], 4: ['Ohne Priorität', 'Ohne', '!0']};
-  const prio = `<section class="hm-card prio"><header><h2>Prioritäten</h2><button class="hm-link" data-act="view" data-view="tasks">Aufgaben</button></header><div class="hm-quads">${[3, 2, 1, 4].map(p => `<button class="hm-q q${p}" data-act="search-for" data-v="${QL[p][2]}"><b>${qn(p)}</b><span class="l">${QL[p][0]}</span><span class="s">${QL[p][1]}</span></button>`).join('')}</div></section>`;
-
-  const html = `${stats}<div class="hm-grid">${woche}${heute}${prio}${nextHtml('side-box hm-next')}</div>`;
+  const html = `${stats}<div class="hm-grid">${woche}${heute}${nextHtml('side-box hm-next')}</div>`;
   if (el.dataset.html === html) return; el.dataset.html = html;
   withFocus(() => { el.innerHTML = html; });
 }
