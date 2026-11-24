@@ -1,5 +1,5 @@
 {
-  "version": "1.14.0",
+  "version": "1.15.0",
   "date": "2026-11-24",
-  "notes": "Eigene Symbole: Urlaub, Überstunden, FvD, Kind-Konto, Sonderurlaub, Geburtstage und „Alles erledigt“."
+  "notes": "Übersicht: Datum mit Kalenderblatt, KW und Live-Uhr statt Begrüßung. „Schnell erfassen“ ist jetzt deutlich als Eingabefeld abgesetzt."
 }
