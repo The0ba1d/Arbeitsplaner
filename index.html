@@ -8,7 +8,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-256.png">
 <link rel="apple-touch-icon" href="icon-256.png">
-<script>window.AP_WEB = {version: "1.12.1"};</script>
+<script>window.AP_WEB = {version: "1.12.2"};</script>
 <title>Arbeitsplaner</title>
 <style>
 @font-face{font-family:"Inter";src:url("fonts/inter.woff2") format("woff2");font-weight:100 900;font-display:swap}
@@ -811,6 +811,19 @@ button.hm-wrow:hover span{color:var(--accent-text)}
 .lv-seg{flex-wrap:wrap}
 .lv-seg.lv-acc{margin-top:0}
 .lv-seg.lv-acc button{font-size:13px}
+.modal.wide{width:min(1000px,100%)}
+.modal.wide .m-head .btn{margin-left:auto;height:38px}
+.modal.wide .m-head .btn + .icon-btn{margin-left:8px}
+.lvb-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:14px}
+.lvb-yr{display:flex;align-items:center;gap:10px}
+.lvb-yr b{font-family:var(--font-head);font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.lvb-yr .sq-btn{width:36px;height:36px;border-radius:10px;background:var(--card-2)}
+.lvb-yr .sq-btn:disabled{opacity:.3;pointer-events:none}
+.lvb-bar .seg{margin-left:auto;background:var(--card-2)}
+.lvb-bar .seg button{height:34px;padding:0 12px;font-size:13.5px}
+.lv-table.lvb{margin-top:0}
+.lv-side .btn .cnt-s{font-weight:500}
+@media (max-width:639px){ .lvb-bar .seg{margin-left:0;width:100%} .lvb-bar .seg button{flex:1;padding:0 6px} .modal.wide .m-head .btn span{display:none} .modal.wide .m-head .btn{width:38px;padding:0;justify-content:center} }
 .lv-table{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden}
 .lv-table > header{display:flex;align-items:center;gap:12px;padding:16px 18px 16px 24px;border-bottom:1px solid var(--line)}
 .lv-table > header b{font-family:var(--font-head);font-size:18px;font-weight:700}
@@ -3151,7 +3164,7 @@ function nextLeave() {
 function sideLeave() {
   const Y = S.leaveYear, nx = nextLeave(), td = todayKey();
   let h = `<div class="side-card lv-side"><div class="yr"><button class="sq-btn" data-act="lv-year" data-v="-1" aria-label="Vorheriges Jahr" ${Y <= LV_MIN_YEAR ? 'disabled' : ''}>${ic('left')}</button><b>${Y}</b><button class="sq-btn" data-act="lv-year" data-v="1" aria-label="Nächstes Jahr">${ic('right')}</button></div>
-    <button class="btn primary" data-act="lv-new">${ic('plus')}Neue Buchung</button></div>`;
+    <button class="btn primary" data-act="lv-new">${ic('plus')}Neue Buchung</button><button class="btn" data-act="lv-list">${ic('list')}Buchungen ansehen<span class="cnt-s" style="margin-left:auto">${leaveRows(Y).length || ''}</span></button></div>`;
   if (nx) {
     const n = diffDays(nx.from, td); const t = LT[nx.type];
     const when = n > 1 ? `in ${n} Tagen` : n === 1 ? 'ab morgen' : n === 0 ? 'ab heute' : 'läuft gerade';
@@ -3169,8 +3182,6 @@ function renderLeave() {
   const maxAbs = Math.max(1, ...o.months.map(x => Math.abs(x.v)));
   const bars = o.months.length ? o.months.map((x, i) => `<i class="${i === o.months.length - 1 && Y === now.getFullYear() ? 'cur' : ''} ${x.v < 0 ? 'minus' : ''}" style="height:${Math.max(6, Math.round(Math.abs(x.v) / maxAbs * 100))}%" title="${MON[x.m]}: ${fmtH(x.v)} h"></i>`).join('') : '<span class="muted">Noch kein Verlauf</span>';
   const mLabel = o.months.length ? `Verlauf ${MONS[0].replace('.', '')} – ${MONS[o.months[o.months.length - 1].m].replace('.', '')}: Saldo am Monatsende` : 'Verlauf: Saldo am Monatsende';
-  const f = LV_GROUPS[S.leaveFilter] ? S.leaveFilter : 'all';
-  const rows = leaveRows(Y).filter(r => f === 'all' || lvEffects(r.e).some(([a]) => LV_GROUPS[f].includes(a))).reverse();
   const isCur = Y === now.getFullYear();
   const standIn = isCur ? `Stand ${now.getDate()}. ${MON[now.getMonth()]} ${Y}` : `Jahr ${Y}`;
   // Urlaub
@@ -3217,10 +3228,6 @@ function renderLeave() {
       ${mini('s', '#B48CF0', 'user', 'Sonderurlaub', `In ${Y} genommene Tage`, suBody, 'betreuung')}
     </div>
     <div class="mobile-only">${sideLeave()}</div>
-    <section class="lv-table">
-      <header><b>Buchungen ${Y}</b><button class="btn primary" data-act="lv-new">${ic('plus')}<span>Neue Buchung</span></button><span class="sp"></span><div class="seg" role="group" aria-label="Filter">${[['all', 'Alle'], ['urlaub', 'Urlaub'], ['ueber', 'Überst./FvD'], ['kind', 'Kind']].map(([key, v]) => `<button data-act="lv-filter" data-v="${key}" aria-pressed="${f === key}">${v}</button>`).join('')}</div></header>
-      ${rows.length ? `<div class="lv-thead"><span>Datum</span><span>Art</span><span>Beschreibung</span><span class="r">Menge</span><span class="r">Stand</span></div>${rows.map(leaveRowHtml).join('')}` : `<div class="lv-empty">${ic('case')}<b>Noch keine Buchungen für ${Y}</b><span>Trage zuerst deine aktuellen Stände ein – danach Urlaub, Überstunden, FvD und Sonderurlaub.</span><div class="btn-row"><button class="btn primary" data-act="lv-new">${ic('plus')}Neue Buchung</button></div></div>`}
-    </section>
   </div>`;
   if (el.dataset.html === html) return; el.dataset.html = html;
   withFocus(() => { el.innerHTML = html; });
@@ -3247,7 +3254,8 @@ const LV_DLG = {
   kind: {name: 'Kind-Konto', def: 'kind_ent', types: [['kind_ent', 'Tage nehmen'], ['kind_stand', 'Stand je Jahr'], ['kind_spar', 'Ansparen']]},
   sonder: {name: 'Sonderurlaub', def: 'betreuung', types: [['betreuung', 'Betreuung Kind'], ['kindkrank', 'Kind krank'], ['sonder', 'Sonstiger'], ['sstand', 'Stand']]}
 };
-function leaveDialog(entry, preset) {
+function leaveDialog(entry, preset, backTo) {
+  const done = () => { if (backTo) setTimeout(backTo, 0); };
   const isNew = !entry; const td = todayKey();
   const st = entry ? clone(entry) : {type: LT[preset] ? preset : 'erholung', from: td, to: td, half: false, title: '', days: null, hours: null, carry: null, origin: null};
   if (!st.to) st.to = st.from;
@@ -3358,20 +3366,43 @@ function leaveDialog(entry, preset) {
       if (st.type === 'u_stand') doc.carry = pos(st.carry); else delete doc.carry;
       if (st.type === 'kind_stand') doc.origin = +st.origin; else if (st.type === 'kind_ent' && st.origin) doc.origin = +st.origin; else delete doc.origin;
       save('leave', doc); closeModal();
-      S.leaveYear = Math.max(LV_MIN_YEAR, leaveYear(doc));
+      S.leaveYear = Math.max(LV_MIN_YEAR, leaveYear(doc)); done();
       toast(isNew ? `${t.name} eingetragen` : 'Buchung gespeichert');
     };
     back.onclick = async e => {
-      if (e.target === back) return closeModal();
+      if (e.target === back) { closeModal(); return done(); }
       const ac = e.target.closest('[data-lacc]');
       if (ac) { read(); if (ac.dataset.lacc !== grp()) setType(LV_DLG[ac.dataset.lacc].def); return; }
       const lt = e.target.closest('[data-lt]');
       if (lt) { read(); setType(lt.dataset.lt); return; }
       const b = e.target.closest('[data-m]'); if (!b) return;
-      if (b.dataset.m === 'no') closeModal();
-      if (b.dataset.m === 'delete') { closeModal(); if (await confirmBox('Buchung löschen?', `„${entry.title || LT[entry.type].name}“ (${dmy(entry.from)}) wird gelöscht.`)) { removeDoc('leave', entry.id); toast('Buchung gelöscht'); } }
+      if (b.dataset.m === 'no') { closeModal(); done(); }
+      if (b.dataset.m === 'delete') { closeModal(); if (await confirmBox('Buchung löschen?', `„${entry.title || LT[entry.type].name}“ (${dmy(entry.from)}) wird gelöscht.`)) { removeDoc('leave', entry.id); toast('Buchung gelöscht'); } done(); }
     };
   }, 'rich');
+}
+// Alle Buchungen eines Jahres in einem eigenen Fenster
+function bookingsDialog() {
+  const body = () => {
+    if (S.leaveYear < LV_MIN_YEAR) S.leaveYear = LV_MIN_YEAR;
+    const Y = S.leaveYear, f = LV_GROUPS[S.leaveFilter] ? S.leaveFilter : 'all';
+    const rows = leaveRows(Y).filter(r => f === 'all' || lvEffects(r.e).some(([a]) => LV_GROUPS[f].includes(a))).reverse();
+    return `<div class="lvb-bar"><div class="lvb-yr"><button type="button" class="sq-btn" data-m="year" data-v="-1" aria-label="Vorheriges Jahr" ${Y <= LV_MIN_YEAR ? 'disabled' : ''}>${ic('left')}</button><b>${Y}</b><button type="button" class="sq-btn" data-m="year" data-v="1" aria-label="Nächstes Jahr">${ic('right')}</button></div><div class="seg" role="group" aria-label="Filter">${[['all', 'Alle'], ['urlaub', 'Urlaub'], ['ueber', 'Überst./FvD'], ['kind', 'Kind']].map(([k, v]) => `<button type="button" data-m="filter" data-v="${k}" aria-pressed="${f === k}">${v}</button>`).join('')}</div></div>
+      <div class="lv-table lvb">${rows.length ? `<div class="lv-thead"><span>Datum</span><span>Art</span><span>Beschreibung</span><span class="r">Menge</span><span class="r">Stand</span></div>${rows.map(leaveRowHtml).join('')}` : `<div class="lv-empty">${ic('case')}<b>Keine Buchungen für ${Y}</b><span>${f === 'all' ? 'Trag zuerst deine Stände ein.' : 'Für diesen Filter gibt es nichts.'}</span></div>`}</div>`;
+  };
+  openModal(`<div class="m-head"><h3>Buchungen</h3><button type="button" class="btn primary" data-m="new">${ic('plus')}<span>Neue Buchung</span></button><button class="icon-btn" type="button" data-m="no" aria-label="Schließen">${ic('x')}</button></div><div class="m-body" id="lvbBody">${body()}</div>`, back => {
+    const redraw = () => { $('#lvbBody', back).innerHTML = body(); render(); };
+    back.onclick = e => {
+      if (e.target === back) return closeModal();
+      const row = e.target.closest('[data-act="lv-edit"]');
+      if (row) { e.stopPropagation(); const en = S.leave.get(row.dataset.id); if (en) { closeModal(); leaveDialog(en, null, bookingsDialog); } return; }
+      const b = e.target.closest('[data-m]'); if (!b) return; const m = b.dataset.m;
+      if (m === 'no') closeModal();
+      if (m === 'new') { closeModal(); leaveDialog(null, null, bookingsDialog); }
+      if (m === 'filter') { S.leaveFilter = b.dataset.v; ls.set('ap.lvFilter', b.dataset.v); redraw(); }
+      if (m === 'year') { S.leaveYear = Math.max(LV_MIN_YEAR, S.leaveYear + +b.dataset.v); redraw(); }
+    };
+  }, 'rich wide');
 }
 function leaveCsv(Y) {
   const rows = leaveRows(Y); const q = s => `"${String(s ?? '').replace(/"/g, '""')}"`;
@@ -3992,6 +4023,7 @@ document.addEventListener('click', e => {
     case 'lv-year': S.leaveYear = Math.max(LV_MIN_YEAR, S.leaveYear + +v); render(); break;
     case 'lv-new': leaveDialog(null, v); break;
     case 'lv-edit': { const en = S.leave.get(id); if (en) leaveDialog(en); break; }
+    case 'lv-list': bookingsDialog(); break;
     case 'lv-filter': S.leaveFilter = v; ls.set('ap.lvFilter', v); render(); break;
     case 'lv-export': exportFile(`urlaub-ueberstunden-${S.leaveYear}.csv`, leaveCsv(S.leaveYear), 'text/csv'); break;
     case 'lv-anspruch': save('leave', {id: uid(), createdAt: Date.now(), kind: 'urlaub', type: 'anspruch', title: `Jahresanspruch ${S.leaveYear}`, from: `${S.leaveYear}-01-01`, to: `${S.leaveYear}-01-01`, days: yearDays(), hours: null, half: false}); toast(`${fmtDays(yearDays())} Tage für ${S.leaveYear} eingetragen`); break;
