@@ -1,5 +1,5 @@
 {
-  "version": "1.12.3",
+  "version": "1.12.4",
   "date": "2026-11-24",
-  "notes": "Übersicht aufgeräumt: „Aufgaben heute“ und „Prioritäten“ sind weg, „Heute“ steht neben der Woche – alles auf einen Blick ohne Scrollen."
+  "notes": "Übersicht füllt jetzt den ganzen Bildschirm. Unter „Heute“ steht „Demnächst“ mit den nächsten Geburtstagen und deinem nächsten Urlaub."
 }

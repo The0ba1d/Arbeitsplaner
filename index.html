@@ -8,7 +8,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-256.png">
 <link rel="apple-touch-icon" href="icon-256.png">
-<script>window.AP_WEB = {version: "1.12.3"};</script>
+<script>window.AP_WEB = {version: "1.12.4"};</script>
 <title>Arbeitsplaner</title>
 <style>
 @font-face{font-family:"Inter";src:url("fonts/inter.woff2") format("woff2");font-weight:100 900;font-display:swap}
@@ -248,7 +248,7 @@ h1,h2,h3{font-family:var(--font-head);margin:0;letter-spacing:-.02em;text-wrap:b
 .wk-col.we .wk-h b{color:var(--fg-2)} .wk-col.hol .wk-h b{color:var(--p-high)}
 .wk-col.today .wk-h b,.wk-col.today .wk-h small{color:var(--accent-text)}
 .wk-items{display:flex;flex-direction:column;gap:4px;padding:0 7px 10px;min-width:0}
-.wk-it{display:block;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;padding:5px 8px;border-radius:8px;font-size:12.5px;line-height:1.3;cursor:pointer;background:color-mix(in srgb, var(--c) 15%, var(--card));min-width:0}
+.wk-it{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:normal;word-break:normal;hyphens:auto;padding:5px 8px;border-radius:8px;font-size:12.5px;line-height:1.3;cursor:pointer;background:color-mix(in srgb, var(--c) 15%, var(--card));min-width:0}
 .wk-it:hover{background:color-mix(in srgb, var(--c) 26%, var(--card))}
 .wk-it.ev{box-shadow:inset 3px 0 0 var(--c);font-weight:600}
 .wk-it.done{opacity:.5} .wk-it.done span{text-decoration:line-through}
@@ -592,6 +592,13 @@ body.detail-big .d-head{padding:16px 18px 14px 28px}
 /* Übersicht */
 #v-home{container-type:inline-size}
 .home{max-width:1240px;margin:0 auto}
+/* PC: Woche und Heute füllen die Bildschirmhöhe */
+@container (min-width:980px){
+  .home{min-height:100%;display:flex;flex-direction:column}
+  #hmBody{flex:1;display:flex;flex-direction:column;min-height:0}
+  #hmBody .hm-grid{flex:1;grid-template-rows:minmax(380px,1fr)}
+  .hm-card.woche .wk-grid{flex:1}
+}
 .hm-bar{display:none;align-items:center;gap:10px;margin-bottom:22px}
 .hm-bar .brand{font-size:19px}
 .hm-sync{display:flex;align-items:center;gap:8px;height:46px;padding:0 10px;border-radius:12px;font-size:13.5px;color:var(--fg-2)}
@@ -916,6 +923,12 @@ button.hm-wrow:hover span{color:var(--accent-text)}
 .bd-import{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
 .bd-import summary{cursor:pointer;font-weight:600;font-size:14px;color:var(--accent-text)}
 .bd-import textarea{width:100%;margin:10px 0;padding:10px 12px;border-radius:12px;background:var(--card);border:1px solid var(--line);resize:vertical;line-height:1.5;font-size:14px}
+.hm-soon-h{margin:14px 20px 6px;padding-top:14px;border-top:1px solid var(--line);font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-2)}
+.hm-soon-l{display:flex;flex-direction:column;padding:0 12px 14px}
+.hm-soon{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:10px;text-align:left;min-width:0}
+.hm-soon:hover{background:var(--hover)}
+.hm-soon .sn{flex:1;min-width:0;font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hm-soon em{font-style:normal;font-size:12.5px;color:var(--fg-2);white-space:nowrap}
 .hm-bd{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;margin-bottom:8px;border-radius:12px;text-align:left;font-weight:600;color:color-mix(in srgb, #FF8A5B 85%, var(--fg));background:color-mix(in srgb, #FF8A5B 12%, transparent)}
 .hm-bd .i{width:18px;height:18px;flex:none}
 .hm-wrow.bd span{display:flex;align-items:center;gap:6px;color:color-mix(in srgb, #FF8A5B 85%, var(--fg))}
@@ -2720,14 +2733,19 @@ function renderHome() {
   const evRow = t => `<div class="hm-task ev" role="button" tabindex="0" data-act="open-task" data-id="${t.id}"><span class="chk ev" title="Termin">${ic('cal')}</span><div class="tt"><b>${t.title ? esc(t.title) : 'Ohne Titel'}</b><small>${isRange(t) ? esc(whenLabel(t)) : t.time ? esc(t.time) + ' · Termin' : 'Termin · ganztägig'}</small>${noteHtml(t)}</div>${ppBadges(t)}<span class="rt">${firstDay(t) === td && t.time ? esc(t.time) : isRange(t) ? 'bis ' + dm(t.due) : 'ganztägig'}</span></div>`;
   const rows = [...open.slice(0, 10), ...done.slice(-3)];
   const more = open.length > 10 ? `<p class="hm-none">+${open.length - 10} weitere</p>` : '';
-  const heute = `<section class="hm-card heute"><header><h2>Heute</h2><button class="hm-link" data-act="sel" data-type="smart" data-id="today">Alle anzeigen</button></header>${bdOn(td).map(b => `<button class="hm-bd" data-act="bd-manage">${ic('cake')}<span>${esc(bdText(b, td))}</span></button>`).join('')}${evToday.map(evRow).join('')}${rows.length ? rows.map(homeTask).join('') + more : evToday.length || bdOn(td).length ? '' : '<p class="hm-none">Für heute ist nichts geplant. Leg oben etwas an oder genieße den freien Tag.</p>'}</section>`;
+  // Demnächst: Geburtstage der nächsten 30 Tage und der nächste Urlaub
+  const nl = nextLeave();
+  const soonRows = [...bdNext(4).filter(x => x.in > 0 && x.in <= 30).map(({b, k, in: d}) => `<button class="hm-soon" data-act="bd-manage"><span class="bd-ic">${ic('cake')}</span><span class="sn">${esc(bdLabel(b, k))}</span><em>${d === 1 ? 'morgen' : WDS[parseKey(k).getDay()] + ' ' + dm(k)}</em></button>`),
+    nl && nl.from > td ? `<button class="hm-soon" data-act="lv-edit" data-id="${nl.id}"><span class="bd-ic" style="color:${LT[nl.type].c};background:color-mix(in srgb, ${LT[nl.type].c} 15%, transparent)">${ic('case')}</span><span class="sn">${esc(nl.title || LT[nl.type].name)}</span><em>${nl.to && nl.to !== nl.from ? dm(nl.from) + ' – ' + dm(nl.to) : dm(nl.from)}</em></button>` : ''].filter(Boolean);
+  const soon = soonRows.length ? `<div class="hm-soon-h">Demnächst</div><div class="hm-soon-l">${soonRows.join('')}</div>` : '';
+  const heute = `<section class="hm-card heute"><header><h2>Heute</h2><button class="hm-link" data-act="sel" data-type="smart" data-id="today">Alle anzeigen</button></header>${bdOn(td).map(b => `<button class="hm-bd" data-act="bd-manage">${ic('cake')}<span>${esc(bdText(b, td))}</span></button>`).join('')}${evToday.map(evRow).join('')}${rows.length ? rows.map(homeTask).join('') + more : evToday.length || bdOn(td).length ? '' : '<p class="hm-none">Für heute ist nichts geplant. Leg oben etwas an oder genieße den freien Tag.</p>'}${soon}</section>`;
 
   // Diese Woche: groß als sieben Spalten, auf dem Handy als Leiste mit Liste
   const ws = startOfWeek(now), by = tasksByDay(), wEnd = dkey(addDays(ws, 6)), lv = leaveByDay(dkey(ws), wEnd);
   const days = [0, 1, 2, 3, 4, 5, 6].map(i => addDays(ws, i));
   const wkItem = t => `<div class="wk-it ${isEvent(t) ? 'ev' : ''} ${t.done ? 'done' : ''}" style="--c:${chipColor(t)}" data-act="open-task" data-id="${t.id}" ${t.done || t._cont ? '' : `data-drag-task="${t.id}"`} title="${esc((t.title || '') + (isRange(t) ? ' · ' + whenLabel(t) : ''))}">${t.time ? `<em>${esc(t.time)}</em>` : ''}<span>${t.title ? esc(t.title) : 'Ohne Titel'}</span>${ppBadges(t)}</div>`;
   const cols = days.map(d => {
-    const k = dkey(d), hol = holidayOf(k), lvs = lv.get(k) || [], items = by.get(k) || [], MAX = 5;
+    const k = dkey(d), hol = holidayOf(k), lvs = lv.get(k) || [], items = by.get(k) || [], MAX = 8;
     return `<div class="wk-col ${k === td ? 'today' : ''} ${k < td ? 'past' : ''} ${dayClass(d)}" data-drop-day="${k}"><button class="wk-h" data-act="home-day" data-day="${k}" title="${esc(longDate(d))} im Kalender öffnen"><small>${WDS[d.getDay()]}</small><b>${d.getDate()}</b></button><div class="wk-items">${hol ? `<div class="wk-hol">${esc(hol)}</div>` : ''}${bdOn(k).map(b => bchip(b, k)).join('')}${lvs.map(lchip).join('')}${items.slice(0, MAX).map(wkItem).join('')}${items.length > MAX ? `<button class="wk-more" data-act="home-day" data-day="${k}">+${items.length - MAX} weitere</button>` : ''}</div></div>`;
   }).join('');
   const strip = days.map(d => {
