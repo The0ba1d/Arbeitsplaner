@@ -8,7 +8,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-256.png">
 <link rel="apple-touch-icon" href="icon-256.png">
-<script>window.AP_WEB = {version: "1.15.0"};</script>
+<script>window.AP_WEB = {version: "1.16.0"};</script>
 <title>Arbeitsplaner</title>
 <style>
 @font-face{font-family:"Inter";src:url("fonts/inter.woff2") format("woff2");font-weight:100 900;font-display:swap}
@@ -805,6 +805,14 @@ button.hm-wrow:hover span{color:var(--accent-text)}
 .lv-tile{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;flex:none}
 .emb{display:block;object-fit:contain;user-select:none;-webkit-user-drag:none}
 .lv-tile.img{background:none;padding:0}
+.banner .emb.bn{width:34px;height:34px;flex:none}
+.row-card .tile.img,.sync-state .tile.img{background:none}
+.row-card .tile.img .emb,.sync-state .tile.img .emb{width:40px;height:40px}
+.m-head .emb.hd{width:34px;height:34px;flex:none;margin-right:-4px}
+.side-box .emb.sbx{width:44px;height:44px;margin:4px 0 2px}
+.cal-free{display:flex;align-items:center;gap:10px;margin-top:10px}
+.cal-free .emb{width:40px;height:40px;flex:none}
+.cal-free .hint{margin:0}
 .lv-tile.img .emb{width:100%;height:100%}
 .lv-card header .lv-tile.img{width:46px;height:46px}
 .lv-mini header .lv-tile.img{width:42px;height:42px}
@@ -2148,10 +2156,10 @@ const SYNC_TEXT = {connecting: 'Gleiche ab …', synced: 'Mit Google Drive synch
 function renderBanner() {
   const b = $('#banner'); let html = ''; const kind = Sync.adapter && Sync.adapter.kind;
   if (S.sync === 'setup' && kind === 'desktop') html = `<div class="banner gold">${ic('folder')}<div><b>Google-Drive-Ordner wählen.</b> Kein Drive-Ordner gefunden. Wähle in „Meine Ablage“ einen Ordner „Arbeitsplaner“ oder lege ihn an.</div><button class="btn primary" data-act="choose-folder">Ordner wählen</button></div>`;
-  else if (S.sync === 'setup' && kind === 'web') html = webGranted() ? `<div class="banner gold">${ic('cloud')}<div><b>Google-Verbindung abgelaufen.</b> Ein Klick erneuert sie – deine Änderungen sind solange auf diesem Gerät gespeichert.</div><button class="btn primary" data-act="drive-connect">Erneuern</button></div>` : `<div class="banner gold">${ic('cloud')}<div><b>Mit Google Drive verbinden,</b> damit dieser Rechner dieselben Aufgaben sieht wie PC, Surface und Handy.</div><button class="btn primary" data-act="drive-connect">Verbinden</button></div>`;
-  else if (S.sync === 'setup' && kind === 'android') html = `<div class="banner gold">${ic('cloud')}<div><b>Mit Google Drive verbinden,</b> damit Handy, PC und Surface dieselben Aufgaben sehen.</div><button class="btn primary" data-act="drive-connect">Verbinden</button></div>`;
-  else if (S.sync === 'offline') html = `<div class="banner warn">${ic('cloud')}<div><b>Google Drive nicht erreichbar.</b> Änderungen bleiben auf diesem Gerät und werden übertragen, sobald die Verbindung zurück ist.</div><button class="btn" data-act="sync-retry">Erneut versuchen</button></div>`;
-  else if (UPD.info && UPD.later !== UPD.info.version) html = `<div class="banner gold">${ic('download')}<div><b>Version ${esc(UPD.info.version)} ist da.</b> ${esc(UPD.info.notes || 'Mit einem Klick installieren.')}</div><button class="btn primary" data-act="update-install" ${UPD.busy ? 'disabled' : ''}>${UPD.busy ? 'Wird geladen …' : kind === 'web' ? 'Neu laden' : 'Jetzt installieren'}</button><button class="x" data-act="update-later" aria-label="Später">${ic('x')}</button></div>`;
+  else if (S.sync === 'setup' && kind === 'web') html = webGranted() ? `<div class="banner gold">${emb('sync', 'bn')}<div><b>Google-Verbindung abgelaufen.</b> Ein Klick erneuert sie – deine Änderungen sind solange auf diesem Gerät gespeichert.</div><button class="btn primary" data-act="drive-connect">Erneuern</button></div>` : `<div class="banner gold">${emb('sync', 'bn')}<div><b>Mit Google Drive verbinden,</b> damit dieser Rechner dieselben Aufgaben sieht wie PC, Surface und Handy.</div><button class="btn primary" data-act="drive-connect">Verbinden</button></div>`;
+  else if (S.sync === 'setup' && kind === 'android') html = `<div class="banner gold">${emb('sync', 'bn')}<div><b>Mit Google Drive verbinden,</b> damit Handy, PC und Surface dieselben Aufgaben sehen.</div><button class="btn primary" data-act="drive-connect">Verbinden</button></div>`;
+  else if (S.sync === 'offline') html = `<div class="banner warn">${emb('offline', 'bn')}<div><b>Google Drive nicht erreichbar.</b> Änderungen bleiben auf diesem Gerät und werden übertragen, sobald die Verbindung zurück ist.</div><button class="btn" data-act="sync-retry">Erneut versuchen</button></div>`;
+  else if (UPD.info && UPD.later !== UPD.info.version) html = `<div class="banner gold">${emb('update', 'bn')}<div><b>Version ${esc(UPD.info.version)} ist da.</b> ${esc(UPD.info.notes || 'Mit einem Klick installieren.')}</div><button class="btn primary" data-act="update-install" ${UPD.busy ? 'disabled' : ''}>${UPD.busy ? 'Wird geladen …' : kind === 'web' ? 'Neu laden' : 'Jetzt installieren'}</button><button class="x" data-act="update-later" aria-label="Später">${ic('x')}</button></div>`;
   else if (kind === 'browser' && !S.bannerOff) html = `<div class="banner">${ic('cloud')}<div><b>Testmodus im Browser.</b> Synchronisiert wird nur in der Windows- und der Android-App.</div><button class="x" data-act="dismiss-banner" aria-label="Hinweis schließen">${ic('x')}</button></div>`;
   if (b.dataset.html !== html) { b.innerHTML = html; b.dataset.html = html; }
 }
@@ -2172,7 +2180,7 @@ function syncDialog(fromSettings) {
   const action = A.driveApi && S.sync === 'setup' ? `<button class="btn primary" data-m="connect">${ic('cloud')}${kind === 'web' && webGranted() ? 'Erneuern' : 'Verbinden'}</button>` : `<button class="btn primary" data-m="sync">${ic('refresh')}Jetzt abgleichen</button>`;
   openModal(`<div class="m-head">${fromSettings ? `<button class="icon-btn" data-m="back" aria-label="Zurück">${ic('left')}</button>` : ''}<h3>Synchronisierung</h3><button class="icon-btn" data-m="no" aria-label="Schließen">${ic('x')}</button></div>
     <div class="m-body">
-      <div class="sync-state ${ok ? '' : 'warn'}"><span class="tile ${ok ? '' : 'warn'}">${ic('cloud')}</span><div><b>${esc(SYNC_TEXT[S.sync] || '')}</b><small>${esc(Sync.message || 'Letzter Abgleich: ' + timeAgo(Sync.lastSync))}</small></div>${action}</div>
+      <div class="sync-state ${ok ? '' : 'warn'}"><span class="tile img">${emb(ok ? 'sync' : 'offline')}</span><div><b>${esc(SYNC_TEXT[S.sync] || '')}</b><small>${esc(Sync.message || 'Letzter Abgleich: ' + timeAgo(Sync.lastSync))}</small></div>${action}</div>
       <div class="fld-h"><span>Speicherort</span></div>
       <div class="path">${ic('folder')}<span>${esc(where)}</span></div>
       ${Sync.dupFolders ? `<div class="banner warn" style="margin:12px 0 0">${ic('folder')}<div><b>${Sync.dupFolders} Ordner „Arbeitsplaner“ in Drive gefunden.</b> Das Handy nutzt den ältesten. Lösche in Google Drive die überzähligen Ordner, damit alle Geräte denselben verwenden.</div></div>` : ''}
@@ -2216,7 +2224,7 @@ function sideTasks() {
   else h += `<div class="side-box"><div class="side-label"><span>Listen</span></div><p>Noch keine Listen. Ordne Aufgaben z. B. nach Arbeit, Privat oder Projekten.</p><button class="pill-btn" data-act="new-list">${ic('plus')}Liste anlegen</button></div>`;
   const ps = people();
   if (ps.length) h += `<div class="side-label"><span>Personen</span><button data-act="people" aria-label="Person anlegen">${ic('plus')}</button></div><nav class="nav">${ps.map(p => navItem('person', p.id, p.name, `<span class="av sm" style="--c:${esc(p.color)}">${esc(p.short)}</span>`, o.filter(t => (t.people || []).includes(p.id)).length, `<span class="edit" role="button" tabindex="0" data-act="people" aria-label="Personen bearbeiten">${ic('more')}</span>`)).join('')}</nav>`;
-  else h += `<div class="side-box"><div class="side-label"><span>Personen</span></div><p>Noch keine Personen. Lege an, wer Aufgaben erledigt – das Kürzel (z. B. TK) steht dann an jeder Aufgabe.</p><button class="pill-btn" data-act="people">${ic('plus')}Person anlegen</button></div>`;
+  else h += `<div class="side-box"><div class="side-label"><span>Personen</span></div>${emb('personen', 'sbx')}<p>Noch keine Personen. Lege an, wer Aufgaben erledigt – das Kürzel (z. B. TK) steht dann an jeder Aufgabe.</p><button class="pill-btn" data-act="people">${ic('plus')}Person anlegen</button></div>`;
   if (tags.length) h += `<div class="side-label"><span>Tags</span></div><nav class="nav">${tags.map(([g, n]) => navItem('tag', g, g, `<span style="color:${tagColor(g)};display:grid">${ic('tag')}</span>`, n)).join('')}</nav>`;
   const fls = sortedFilters();
   if (fls.length) h += `<div class="side-label"><span>Filter</span></div><nav class="nav">${fls.map(f => { const c = compileFilter(f.query); return navItem('filter', f.id, f.name, ic('filter'), (c.done ? liveTasks() : openTasks()).filter(c.fn).length, `<span class="edit" role="button" tabindex="0" data-act="edit-filter" data-id="${f.id}" aria-label="Filter bearbeiten">${ic('more')}</span>`); }).join('')}</nav>`;
@@ -2232,7 +2240,7 @@ function sideCalendar(suffix = '') {
   const fer = ferienOf(k), lvs = leaveByDay(k, k).get(k) || [];
   let h = `<div class="side-card"><h3>${esc(title)}</h3><div class="sub">${d.getDate()}. ${MON[d.getMonth()]} ${d.getFullYear()} · KW ${isoWeek(d)}</div>${holidayOf(k) ? `<div class="hol-name big">${esc(holidayOf(k))}</div>` : ''}${fer ? `<div class="fer-name big">Schulferien: ${esc(fer)}</div>` : ''}${bdOn(k).length ? `<div class="lv-day">${bdOn(k).map(b => bchip(b, k)).join('')}</div>` : ''}${lvs.length ? `<div class="lv-day">${lvs.map(lchip).join('')}</div>` : ''}
     <label class="qa small" for="qa-day${suffix}">${ic('plus')}<input id="qa-day${suffix}" type="text" placeholder="Aufgabe für diesen Tag" autocomplete="off" enterkeyhint="done"></label>
-    ${items.length ? `<div>${items.map(miniTask).join('')}</div>` : '<p class="hint">Für diesen Tag ist nichts geplant.</p>'}</div>`;
+    ${items.length ? `<div>${items.map(miniTask).join('')}</div>` : `<div class="cal-free">${emb('frei')}<p class="hint">Für diesen Tag ist nichts geplant.</p></div>`}</div>`;
   const nodate = openTasks().filter(t => !t.due).sort(cmpTask);
   if (nodate.length) h += `<div class="side-label"><span>Ohne Datum</span><span class="cnt-s">${nodate.length}</span></div><div class="nodate">${nodate.slice(0, 20).map(t => `<div class="drag-item" data-drag-task="${t.id}" data-act="open-task" data-id="${t.id}" role="button" tabindex="0">${ic('grip')}<span class="mt-title">${t.title ? esc(t.title) : 'Ohne Titel'}</span></div>`).join('')}${nodate.length > 20 ? `<p class="hint">+${nodate.length - 20} weitere</p>` : ''}<p class="hint">In den Kalender ziehen, um ein Datum zu setzen.</p></div>`;
   h += sideBirthdays();
@@ -2318,6 +2326,8 @@ function emptyState(info) {
     tomorrow: ['sunrise', 'Morgen ist noch frei', 'Aufgaben mit Datum „morgen“ erscheinen hier.'],
     week: ['week', 'Die nächsten 7 Tage sind frei', 'Aufgaben mit Fälligkeit in dieser Woche erscheinen hier.'],
     inbox: ['inbox', 'Dein Eingang ist leer', 'Alles, was du ohne Liste anlegst, landet zuerst hier.'],
+    completed: ['done', 'Noch nichts erledigt', 'Abgehakte Aufgaben erscheinen hier.'],
+    trash: ['trash', 'Der Papierkorb ist leer', 'Gelöschte Aufgaben landen hier und lassen sich wiederherstellen.'],
     all: ['all', 'Noch keine Aufgaben', 'Leg oben deine erste Aufgabe an. Die Schnell-Eingabe versteht Datum, Uhrzeit und Priorität.']
   };
   const [icon, h, p] = S.sel.type === 'smart' ? (map[S.sel.id] || map.all) : ['list', `„${info.title}“ ist leer`, 'Füge oben die erste Aufgabe hinzu.'];
@@ -2326,7 +2336,7 @@ function emptyState(info) {
     const tm = dkey(addDays(new Date(), 1)); const n = openTasks().filter(t => t.due === tm).length;
     if (n) actions += `<button class="btn" data-act="pull-tomorrow">${ic('sunrise')}${n} ${n === 1 ? 'Aufgabe' : 'Aufgaben'} von morgen vorziehen</button>`;
   }
-  return `<div class="empty">${S.sel.type === 'smart' ? `<div class="rings img"><span>${emb('erledigt')}</span></div>` : rings(icon)}<h2>${esc(h)}</h2><p>${esc(p)}</p>${actions ? `<div class="empty-actions">${actions}</div>` : ''}</div>${quickCard()}`;
+  return `<div class="empty"><div class="rings img"><span>${emb(S.sel.type === 'smart' ? ({today: 'frei', tomorrow: 'frei', week: 'frei', inbox: 'eingang', trash: 'papierkorb'}[S.sel.id] || 'erledigt') : 'eingang')}</span></div><h2>${esc(h)}</h2><p>${esc(p)}</p>${actions ? `<div class="empty-actions">${actions}</div>` : ''}</div>${quickCard()}`;
 }
 const menuBtn = () => `<button class="sq-btn menu-btn" data-act="menu" aria-label="Menü öffnen">${ic('menu')}<span class="sdot ${S.sync}"></span></button>`;
 function renderTasks() {
@@ -2352,7 +2362,7 @@ function renderTasks() {
   else if (info.kind === 'search') {
     const q = S.search.toLowerCase(); const cf = compileFilter(S.search);
     const res = cf.ops ? (cf.done ? liveTasks() : openTasks()).filter(cf.fn).sort(cmpTask) : liveTasks().filter(t => (t.title || '').toLowerCase().includes(q) || (t.notes || '').toLowerCase().includes(q) || (t.tags || []).some(g => g.toLowerCase().includes(q)) || (t.subtasks || []).some(s => (s.title || '').toLowerCase().includes(q))).sort((a, b) => (a.done - b.done) || cmpTask(a, b));
-    html = res.length ? `<div class="group"><div class="gbody">${res.map(t => taskRow(t)).join('')}</div></div>` : `<div class="empty">${rings('search')}<h2>Nichts gefunden</h2><p>Keine Aufgabe enthält „${esc(S.search)}“ in Titel, Notizen, Tags oder Unteraufgaben.</p></div>`;
+    html = res.length ? `<div class="group"><div class="gbody">${res.map(t => taskRow(t)).join('')}</div></div>` : `<div class="empty"><div class="rings img"><span>${emb('suche')}</span></div><h2>Nichts gefunden</h2><p>Keine Aufgabe enthält „${esc(S.search)}“ in Titel, Notizen, Tags oder Unteraufgaben.</p></div>`;
     html += `<div class="search-tip">Suche filtern mit ${['@TK', '#tag', '!1', '^Liste', 'heute', 'überfällig', 'ohne datum', 'erledigt'].map(x => `<code>${esc(x)}</code>`).join('')}</div>`;
   } else if (info.kind === 'completed') {
     const ts = liveTasks().filter(t => t.done).sort((a, b) => (b.completedAt || 0) - (a.completedAt || 0)).slice(0, 300);
@@ -2712,7 +2722,7 @@ function peopleDialog() {
     return `${ps.length ? ps.map(p => `<div class="pp-row" data-id="${p.id}"><button class="av" style="--c:${esc(p.color)}" data-pp="color" title="Farbe wechseln" aria-label="Farbe wechseln">${esc(p.short)}</button><input class="nm" data-pp="name" type="text" maxlength="40" value="${esc(p.name)}" aria-label="Name"><input class="sh" data-pp="short" type="text" maxlength="4" value="${esc(p.short)}" aria-label="Kürzel"><button class="del" data-pp="del" aria-label="${esc(p.name)} entfernen">${ic('trash')}</button></div>`).join('') : '<p class="hint">Noch keine Personen. Trag unten einen Namen ein – das Kürzel (z. B. TK für Tobias König) entsteht automatisch und lässt sich ändern.</p>'}
       <form class="pp-add" id="ppAdd"><input id="pp-new" type="text" maxlength="40" placeholder="Name, z. B. Tobias König" autocomplete="off"><button class="btn primary" type="submit">${ic('plus')}Hinzufügen</button></form>`;
   };
-  openModal(`<div class="m-head"><h3>Personen</h3><button class="icon-btn" data-m="no" aria-label="Schließen">${ic('x')}</button></div><div class="m-body"><p class="hint" style="margin-top:0">Wer erledigt Aufgaben? Das Kürzel steht an jeder zugewiesenen Aufgabe. Gilt auf allen Geräten.</p><div id="ppBody">${body()}</div></div><div class="m-foot"><button class="btn" data-m="assign">Aufgaben zuweisen</button><span class="sp"></span><button class="btn primary" data-m="no">Fertig</button></div>`, back => {
+  openModal(`<div class="m-head">${emb('personen', 'hd')}<h3>Personen</h3><button class="icon-btn" data-m="no" aria-label="Schließen">${ic('x')}</button></div><div class="m-body"><p class="hint" style="margin-top:0">Wer erledigt Aufgaben? Das Kürzel steht an jeder zugewiesenen Aufgabe. Gilt auf allen Geräten.</p><div id="ppBody">${body()}</div></div><div class="m-foot"><button class="btn" data-m="assign">Aufgaben zuweisen</button><span class="sp"></span><button class="btn primary" data-m="no">Fertig</button></div>`, back => {
     setTimeout(() => $('#pp-new', back)?.focus(), 60);
     const redraw = (focusNew) => { $('#ppBody', back).innerHTML = body(); if (focusNew) $('#pp-new', back).focus(); };
     const upd = (id, fn) => { setApp({people: people().map(p => p.id === id ? fn({...p}) : p)}); };
@@ -2837,7 +2847,7 @@ function renderHome() {
     const chips = [...bdOn(k).map(x => ({c: BD_C, t: bdLabel(x, k), bd: true})), ...(mlv.get(k) || []).map(e => ({c: LT[e.type].c, t: e.title || LT[e.type].cal || LT[e.type].name})), ...(by.get(k) || []).filter(t => !t.done).map(t => ({c: chipColor(t), t: (t.time ? t.time + ' ' : '') + (t.title || 'Ohne Titel')}))];
     mc += `<button class="mc-d ${d.getMonth() !== mA.getMonth() ? 'out' : ''} ${k === td ? 'today' : ''} ${k < td ? 'past' : ''} ${dayClass(d)}" data-act="home-day" data-day="${k}" title="${esc([longDate(d), hol, ...chips.map(x => x.t)].filter(Boolean).join(' · '))}"><b>${d.getDate()}</b>${hol ? `<span class="mc-hol">${esc(hol)}</span>` : ''}<span class="mc-it">${chips.slice(0, 3).map(x => `<i class="${x.bd ? 'bd' : ''}" style="--c:${x.c}">${esc(x.t)}</i>`).join('')}${chips.length > 3 ? `<em>+${chips.length - 3}</em>` : ''}</span><span class="mc-dots">${chips.slice(0, 4).map(x => `<i style="--c:${x.c}"></i>`).join('')}</span></button>`;
   }
-  const monat = `<section class="hm-card monat"><header><h2>${MON[mA.getMonth()]} ${mA.getFullYear()}</h2>${S.hmMonth ? '<button class="hm-link" data-act="hm-month" data-v="0">Heute</button>' : ''}<button class="sq-btn sm" data-act="hm-month" data-v="-1" aria-label="Vorheriger Monat">${ic('left')}</button><button class="sq-btn sm" data-act="hm-month" data-v="1" aria-label="Nächster Monat">${ic('right')}</button><button class="hm-link" data-act="view" data-view="calendar">Kalender</button></header><div class="mc-grid" style="--weeks:${weeks}">${mc}</div></section>`;
+  const monat = `<section class="hm-card monat"><header>${emb('termin', 'hd')}<h2>${MON[mA.getMonth()]} ${mA.getFullYear()}</h2>${S.hmMonth ? '<button class="hm-link" data-act="hm-month" data-v="0">Heute</button>' : ''}<button class="sq-btn sm" data-act="hm-month" data-v="-1" aria-label="Vorheriger Monat">${ic('left')}</button><button class="sq-btn sm" data-act="hm-month" data-v="1" aria-label="Nächster Monat">${ic('right')}</button><button class="hm-link" data-act="view" data-view="calendar">Kalender</button></header><div class="mc-grid" style="--weeks:${weeks}">${mc}</div></section>`;
 
   // Geburtstage
   const nb = bdNext(4);
@@ -2978,9 +2988,8 @@ async function settingsDialog() {
   const ok = S.sync === 'synced' || S.sync === 'connecting'; const A = Sync.adapter || {}; const as = appSet();
   let prefs = null; if (A.kind === 'desktop') { try { prefs = await window.__TAURI__.core.invoke('get_prefs'); } catch (e) { console.warn(e); } }
   const remSub = A.kind === 'android' ? 'Auch wenn die App geschlossen ist' : A.kind === 'desktop' ? 'Solange der Arbeitsplaner läuft – auch im Infobereich' : 'Nur solange diese Seite offen ist';
-  openModal(`<div class="m-head"><h3>Einstellungen</h3><button class="icon-btn" data-m="no" aria-label="Schließen">${ic('x')}</button></div>
+  openModal(`<div class="m-head">${emb('einstellungen', 'hd')}<h3>Einstellungen</h3><button class="icon-btn" data-m="no" aria-label="Schließen">${ic('x')}</button></div>
     <div class="m-body">
-      <div class="fld-h"><span>Begrüßung</span><em>gilt auf allen Geräten</em></div>
       <div class="fld-h"><span>Farbthema</span><em>gilt auf allen Geräten</em></div>
       <div class="themes">${themeButtons()}</div>
       <div class="fld-h"><span>Darstellung</span><em>nur dieses Gerät</em></div>
@@ -3001,9 +3010,9 @@ async function settingsDialog() {
       <div class="btn-row"><button class="btn" data-m="export">${ic('download')}Exportieren</button><button class="btn" data-m="import">${ic('upload')}Importieren</button><button class="btn" data-m="ics">${ic('cal')}Kalender (ICS)</button>${A.kind === 'desktop' || A.driveApi ? `<button class="btn" data-m="backups">${ic('folder')}Sicherungen</button>` : ''}</div>
       ${A.kind === 'desktop' ? tgl('archive', as.archive !== false, 'Erledigte nach 12 Monaten archivieren', 'Verschiebt sie nach „archiv-aufgaben.json“ im Drive-Ordner') : ''}
       ${A.updateInfo ? `<div class="fld-h"><span>App</span><em>Version ${esc(UPD.current || '–')}</em></div>
-      <button class="row-card" data-m="update"><span class="tile">${ic('download')}</span><span style="flex:1;min-width:0"><b>${UPD.info ? `Version ${esc(UPD.info.version)} installieren` : 'Nach Updates suchen'}</b><small>${UPD.info ? esc(UPD.info.notes || 'Neue Version verfügbar') : 'Neue Versionen kommen über Google Drive'}</small></span>${ic('right')}</button>` : ''}
+      <button class="row-card" data-m="update"><span class="tile img">${emb('update')}</span><span style="flex:1;min-width:0"><b>${UPD.info ? `Version ${esc(UPD.info.version)} installieren` : 'Nach Updates suchen'}</b><small>${UPD.info ? esc(UPD.info.notes || 'Neue Version verfügbar') : 'Neue Versionen kommen über Google Drive'}</small></span>${ic('right')}</button>` : ''}
       <div class="fld-h"><span>Synchronisierung</span></div>
-      <button class="row-card" data-m="sync"><span class="tile ${ok ? '' : 'warn'}">${ic('cloud')}</span><span style="flex:1;min-width:0"><b>${esc(SYNC_TEXT[S.sync] || '')}</b><small>Letzter Abgleich: ${esc(timeAgo(Sync.lastSync))}</small></span>${ic('right')}</button>
+      <button class="row-card" data-m="sync"><span class="tile img">${emb(ok ? 'sync' : 'offline')}</span><span style="flex:1;min-width:0"><b>${esc(SYNC_TEXT[S.sync] || '')}</b><small>Letzter Abgleich: ${esc(timeAgo(Sync.lastSync))}</small></span>${ic('right')}</button>
     </div>
     <div class="m-foot"><button class="btn ghost" data-m="keys">Tastenkürzel</button><span class="sp"></span><button class="btn primary" data-m="no">Fertig</button></div>`, back => {
     back.onchange = e => {
